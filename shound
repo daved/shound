@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+# config file @ ~/.config/shound/config
+#  script config vals
+#   AUDIO=~/Documents/audio/star_trek
+#   STATUS=on
+#  command config vals
+#   _ : startup-sound.flac
+#   ls : processing.flac
+#   git : add : processing3.flac
+
+# aliases (based on first "command key" only - (i.e. drop "add" from "git : add"))
+#  command_name="shound command_name"
+
+main() {
+    local cmd
+
+    cmd="${1}"
+
+    # if no args
+    #  if no config
+    #   exit 1
+    #  parse config
+    #  if no dir
+    #   exit 1
+    #  set alias for each command in config
+    #  play startup sound of key "_"
+    #  exit 0
+
+    # if first arg is "-off"
+    #  if no config
+    #   exit 1
+    #  set STATUS config val to "off"
+
+    # if first arg is "-on"
+    #  if no config
+    #   exit 1
+    #  set STATUS config val to "on"
+
+    # if no config
+    #  exit 1
+    # parse config
+    # if STATUS not "on" or if AUDIO bad dir
+    #  run command and exit $?
+    # if key does not exist
+    #  run command and exit $?
+    # if key exists
+    #  parse 0 or > sub keys checking longest chains first
+    #   play audio in bg
+    #   run command with args
+    #   exit $?
+
+    paplay ~/Documents/personal/saves/audio/processed/star_trek/processing.flac &
+
+    $(which "${cmd}") "${@:2}"
+    exit $?
+}
+
+main "${@}"
