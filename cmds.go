@@ -39,17 +39,17 @@ func (c *CmdTop) HandleCommand() error {
 	return nil
 }
 
-type CmdHook struct {
+type CmdExport struct {
 	cnf   *Cnf
 	extra string
 
 	fs *flagset.FlagSet
 }
 
-func NewCmdHook(name string, cnf *Cnf) *CmdHook {
+func NewCmdExport(name string, cnf *Cnf) *CmdExport {
 	fs := flagset.New(name)
 
-	c := CmdHook{
+	c := CmdExport{
 		cnf: cnf,
 		fs:  fs,
 	}
@@ -59,42 +59,12 @@ func NewCmdHook(name string, cnf *Cnf) *CmdHook {
 	return &c
 }
 
-func (c *CmdHook) FlagSet() *flagset.FlagSet {
+func (c *CmdExport) FlagSet() *flagset.FlagSet {
 	return c.fs
 }
 
-func (c *CmdHook) HandleCommand() error {
-	fmt.Println("hook info", c.cnf.info)
-	fmt.Println("hook extra", c.extra)
-	return nil
-}
-
-type CmdOther struct {
-	cnf  *Cnf
-	more string
-
-	fs *flagset.FlagSet
-}
-
-func NewCmdOther(name string, cnf *Cnf) *CmdOther {
-	fs := flagset.New(name)
-
-	c := CmdOther{
-		cnf: cnf,
-		fs:  fs,
-	}
-
-	fs.Opt(&c.more, "more|m", "more info", "")
-
-	return &c
-}
-
-func (c *CmdOther) FlagSet() *flagset.FlagSet {
-	return c.fs
-}
-
-func (c *CmdOther) HandleCommand() error {
-	fmt.Println("other info", c.cnf.info)
-	fmt.Println("other more", c.more)
+func (c *CmdExport) HandleCommand() error {
+	fmt.Println("export info", c.cnf.info)
+	fmt.Println("export extra", c.extra)
 	return nil
 }

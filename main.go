@@ -30,13 +30,11 @@ func run(args []string) error {
 	cnf := &Cnf{}
 
 	top := NewCmdTop(appName, cnf)
-	hook := NewCmdHook("hook", cnf)
-	other := NewCmdOther("other", cnf)
+	export := NewCmdExport("export", cnf)
 
-	cmdHook := clic.New(hook)
-	cmdOther := clic.New(other)
+	cmdExport := clic.New(export)
 
-	cmd := clic.New(top, cmdHook, cmdOther)
+	cmd := clic.New(top, cmdExport)
 	if err := cmd.Parse(args); err != nil {
 		if perr := (*clic.ParseError)(nil); errors.As(err, &perr) {
 			fmt.Println(perr.FlagSet().Help())
