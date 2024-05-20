@@ -26,15 +26,23 @@ func main() {
 	}
 }
 
-func run(args []string) error {
-	cnf := &Cnf{}
+func run(args []string) error { // TODO: error handling
+	cnfHandle, err := os.Open("./example.config.toml")
+	if err != nil {
+		return err
+	}
+
+	cnf := NewConfig()
+	if err := cnf.file.initFromTOML(cnfHandle); err != nil {
+		return err
+	}
 
 	top := NewCmdTop(appName, cnf)
 	export := NewCmdExport("export", cnf)
 
 	cmdExport := clic.New(export)
-
 	cmd := clic.New(top, cmdExport)
+
 	if err := cmd.Parse(args); err != nil {
 		if perr := (*clic.ParseError)(nil); errors.As(err, &perr) {
 			fmt.Println(perr.FlagSet().Help())
@@ -42,5 +50,13 @@ func run(args []string) error {
 		return err
 	}
 
-	return cmd.HandleCommand()
+	if err := cnf.Resolve(); err != nil {
+		return err
+	}
+
+	if err := cmd.HandleCommand(); err != nil {
+		return err
+	}
+
+	return nil
 }
