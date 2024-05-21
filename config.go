@@ -7,6 +7,10 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
+const (
+	notFoundKey = "__notfound"
+)
+
 type CmdsSounds map[string]string // map[CmdName]SoundFile
 
 type Config struct {
@@ -17,6 +21,7 @@ type Config struct {
 	soundDir   FilePath
 	playCmd    string
 	cmdsSounds CmdsSounds
+	noCmdSound string
 }
 
 func NewConfig() *Config {
@@ -28,9 +33,18 @@ func NewConfig() *Config {
 
 func (c *Config) Resolve() error {
 	c.playCmd = c.file.PlayCmd
+
+	c.cmdsSounds = cloneMap(c.file.CmdSounds)
+	for k, v := range c.cmdsSounds {
+		if k == notFoundKey {
+			c.noCmdSound = v
+			delete(c.cmdsSounds, k)
+		}
+	}
+
 	// TODO: handle sounddir construction appropriately
 	c.soundDir = FilePath(filepath.Join(string(c.file.SoundCache), string(c.file.Theme)))
-	c.cmdsSounds = c.file.CmdSounds
+
 	return nil
 }
 
@@ -59,4 +73,14 @@ func (c *ConfigFile) initFromTOML(r io.Reader) error {
 	// TODO: validate combination of soundcache+theme
 
 	return nil
+}
+
+func cloneMap(in map[string]string) map[string]string {
+	out := make(map[string]string)
+
+	for k, v := range in {
+		out[k] = v
+	}
+
+	return out
 }

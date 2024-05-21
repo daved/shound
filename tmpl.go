@@ -6,14 +6,6 @@ import (
 	"text/template"
 )
 
-/*
- function command_not_found_handle() {
-        notfound >/dev/null 2>&1
-        printf "%s: command not found\n" "$1" >&2
-        return 127
- }
-*/
-
 var x = strings.TrimSpace(`
 {{$soundDir := .SoundDir -}} 
 
@@ -25,10 +17,19 @@ if ! (alias {{$alias}} 2>/dev/null | grep "_shound" &>/dev/null); then
 	alias {{$alias}}="(_shound \"{{$soundDir}}/{{$sound}}\" &) && $_shound_{{$alias}}"
 fi
 {{end}}
+
+{{if .NoCmdSound}}
+function command_not_found_handle() {
+	(_shound "{{$soundDir}}/{{.NoCmdSound}}" &)
+	printf "%s: command not found\n" "$1" >&2
+	return 127
+}
+{{end}}
 `)
 
 type AliasesData struct {
 	CmdsSounds CmdsSounds
+	NoCmdSound string
 	PlayCmd    string
 	SoundDir   string
 }

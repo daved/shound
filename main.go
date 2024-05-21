@@ -55,7 +55,6 @@ func run(args []string) error { // TODO: error handling
 		return err
 	}
 
-	fmt.Println(top.confFilePath)
 	cnfHandle, err := os.Open(top.confFilePath)
 	if err != nil {
 		return err

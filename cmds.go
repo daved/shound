@@ -63,6 +63,7 @@ func (c *CmdExport) HandleCommand() error {
 		PlayCmd:    c.cnf.playCmd,
 		SoundDir:   string(c.cnf.soundDir),
 		CmdsSounds: c.cnf.cmdsSounds,
+		NoCmdSound: c.cnf.noCmdSound,
 	}
 
 	return c.ts.Aliases(os.Stdout, d)
