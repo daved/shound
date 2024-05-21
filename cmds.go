@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/daved/flagset"
@@ -32,7 +33,10 @@ func (c *CmdTop) FlagSet() *flagset.FlagSet {
 }
 
 func (c *CmdTop) HandleCommand() error {
-	// TODO: should print help?
+	if c.cnf.help {
+		fmt.Fprint(os.Stdout, c.FlagSet().Help())
+		return nil
+	}
 	return nil
 }
 

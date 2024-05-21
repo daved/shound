@@ -50,7 +50,7 @@ func run(args []string) error { // TODO: error handling
 
 	if err := cmd.Parse(args); err != nil {
 		if perr := (*clic.ParseError)(nil); errors.As(err, &perr) {
-			fmt.Println(perr.FlagSet().Help())
+			fmt.Println(perr.Handler().FlagSet().Help())
 		}
 		return err
 	}

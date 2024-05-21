@@ -32,6 +32,7 @@ func NewConfig() *Config {
 }
 
 func (c *Config) Resolve() error {
+	c.help = c.flags.help
 	c.playCmd = c.file.PlayCmd
 
 	c.cmdsSounds = cloneMap(c.file.CmdSounds)
