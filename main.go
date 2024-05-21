@@ -4,12 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/daved/clic"
 )
 
 var (
-	appName = "shound"
+	appName      = "shound"
+	configSubdir = filepath.Join(".config", appName)
 )
 
 func main() {
@@ -27,18 +29,21 @@ func main() {
 }
 
 func run(args []string) error { // TODO: error handling
-	cnfHandle, err := os.Open("./example.config.toml")
+	cnf := NewConfig()
+
+	ts, err := NewTmpls()
 	if err != nil {
 		return err
 	}
 
-	cnf := NewConfig()
-	if err := cnf.file.initFromTOML(cnfHandle); err != nil {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
 		return err
 	}
+	defaultConfFile := filepath.Join(homeDir, configSubdir, "config.toml")
 
-	top := NewCmdTop(appName, cnf)
-	export := NewCmdExport("export", cnf)
+	top := NewCmdTop(appName, cnf, defaultConfFile)
+	export := NewCmdExport("export", cnf, ts)
 
 	cmdExport := clic.New(export)
 	cmd := clic.New(top, cmdExport)
@@ -47,6 +52,15 @@ func run(args []string) error { // TODO: error handling
 		if perr := (*clic.ParseError)(nil); errors.As(err, &perr) {
 			fmt.Println(perr.FlagSet().Help())
 		}
+		return err
+	}
+
+	fmt.Println(top.confFilePath)
+	cnfHandle, err := os.Open(top.confFilePath)
+	if err != nil {
+		return err
+	}
+	if err := cnf.file.initFromTOML(cnfHandle); err != nil {
 		return err
 	}
 

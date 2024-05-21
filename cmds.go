@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/daved/flagset"
@@ -10,16 +9,20 @@ import (
 type CmdTop struct {
 	cnf *Config
 	fs  *flagset.FlagSet
+
+	confFilePath string
 }
 
-func NewCmdTop(appName string, cnf *Config) *CmdTop {
+func NewCmdTop(appName string, cnf *Config, defaultConfFile string) *CmdTop {
 	fs := flagset.New(appName)
 	c := CmdTop{
-		cnf: cnf,
-		fs:  fs,
+		cnf:          cnf,
+		fs:           fs,
+		confFilePath: defaultConfFile,
 	}
 
-	fs.Opt(&cnf.flags.help, "help|h", "help output", "")
+	fs.Opt(&cnf.flags.help, "help|h", "print help output", "")
+	fs.Opt(&c.confFilePath, "conf", "path to config file", "")
 
 	return &c
 }
@@ -36,14 +39,16 @@ func (c *CmdTop) HandleCommand() error {
 type CmdExport struct {
 	cnf *Config
 	fs  *flagset.FlagSet
+	ts  *Tmpls
 }
 
-func NewCmdExport(name string, cnf *Config) *CmdExport {
+func NewCmdExport(name string, cnf *Config, ts *Tmpls) *CmdExport {
 	fs := flagset.New(name)
 
 	c := CmdExport{
 		cnf: cnf,
 		fs:  fs,
+		ts:  ts,
 	}
 
 	return &c
@@ -54,9 +59,11 @@ func (c *CmdExport) FlagSet() *flagset.FlagSet {
 }
 
 func (c *CmdExport) HandleCommand() error {
-	// TODO: fill
-	fmt.Println(c.cnf.file)
-	fmt.Println()
-	fmt.Fprint(os.Stdout, x)
-	return nil
+	d := AliasesData{
+		PlayCmd:    c.cnf.playCmd,
+		SoundDir:   string(c.cnf.soundDir),
+		CmdsSounds: c.cnf.cmdsSounds,
+	}
+
+	return c.ts.Aliases(os.Stdout, d)
 }

@@ -1,10 +1,53 @@
 package main
 
-import "strings"
+import (
+	"io"
+	"strings"
+	"text/template"
+)
+
+/*
+ function command_not_found_handle() {
+        notfound >/dev/null 2>&1
+        printf "%s: command not found\n" "$1" >&2
+        return 127
+ }
+*/
 
 var x = strings.TrimSpace(`
-alias _shound="pw-cat --playback"
-alias hw="(_shound \$HOME/.cache/shound/star_trek/alert19.flac &) && echo hello world"
-`) + "\n"
+{{$soundDir := .SoundDir -}} 
 
-// TODO: setup templating properly
+alias _shound="{{.PlayCmd}}"
+{{range $alias, $sound := .CmdsSounds -}}
+if ! (alias {{$alias}} 2>/dev/null | grep "_shound" &>/dev/null); then
+	_shound_{{$alias}}={{$alias}}
+	alias {{$alias}} &>/dev/null && _shound_{{$alias}}="$(alias {{$alias}} | cut -d "=" -f2-)" && _shound_{{$alias}}="${_shound_{{$alias}}:1:${#_shound_{{$alias}}}-2}"
+	alias {{$alias}}="(_shound \"{{$soundDir}}/{{$sound}}\" &) && $_shound_{{$alias}}"
+fi
+{{end}}
+`)
+
+type AliasesData struct {
+	CmdsSounds CmdsSounds
+	PlayCmd    string
+	SoundDir   string
+}
+
+type Tmpls struct {
+	Aliases func(io.Writer, AliasesData) error
+}
+
+func NewTmpls() (*Tmpls, error) {
+	aliasesTmpl, err := template.New("aliases").Parse(x)
+	if err != nil {
+		return nil, err
+	}
+
+	ts := &Tmpls{
+		Aliases: func(w io.Writer, d AliasesData) error {
+			return aliasesTmpl.Execute(w, d)
+		},
+	}
+
+	return ts, nil
+}

@@ -2,18 +2,21 @@ package main
 
 import (
 	"io"
+	"path/filepath"
 
 	"github.com/BurntSushi/toml"
 )
+
+type CmdsSounds map[string]string // map[CmdName]SoundFile
 
 type Config struct {
 	flags *GlobalFlags
 	file  *ConfigFile
 
 	help       bool
-	audioCache FilePath
+	soundDir   FilePath
 	playCmd    string
-	cmdSounds  map[string]string
+	cmdsSounds CmdsSounds
 }
 
 func NewConfig() *Config {
@@ -24,7 +27,10 @@ func NewConfig() *Config {
 }
 
 func (c *Config) Resolve() error {
-	// TODO: fill
+	c.playCmd = c.file.PlayCmd
+	// TODO: handle sounddir construction appropriately
+	c.soundDir = FilePath(filepath.Join(string(c.file.SoundCache), string(c.file.Theme)))
+	c.cmdsSounds = c.file.CmdSounds
 	return nil
 }
 
