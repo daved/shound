@@ -7,6 +7,9 @@ import (
 	"path/filepath"
 
 	"github.com/daved/clic"
+	"github.com/daved/shound/internal/ccmd"
+	"github.com/daved/shound/internal/config"
+	"github.com/daved/shound/internal/tmpls"
 )
 
 var (
@@ -29,9 +32,9 @@ func main() {
 }
 
 func run(args []string) error { // TODO: handle errors
-	cnf := NewConfig()
+	cnf := config.NewConfig()
 
-	ts, err := NewTmpls()
+	ts, err := tmpls.NewTmpls()
 	if err != nil {
 		return err
 	}
@@ -42,8 +45,8 @@ func run(args []string) error { // TODO: handle errors
 	}
 	defaultConfFile := filepath.Join(homeDir, configSubdir, "config.toml")
 
-	top := NewCmdTop(appName, cnf, defaultConfFile)
-	export := NewCmdExport("export", cnf, ts)
+	top := ccmd.NewCmdTop(appName, cnf, defaultConfFile)
+	export := ccmd.NewCmdExport("export", cnf, ts)
 
 	cmdExport := clic.New(export)
 	cmd := clic.New(top, cmdExport)
@@ -55,11 +58,11 @@ func run(args []string) error { // TODO: handle errors
 		return err
 	}
 
-	cnfHandle, err := os.Open(top.confFilePath)
+	cnfHandle, err := os.Open(top.ConfFilePath)
 	if err != nil {
 		return err
 	}
-	if err := cnf.file.initFromTOML(cnfHandle); err != nil {
+	if err := cnf.File.InitFromTOML(cnfHandle); err != nil {
 		return err
 	}
 

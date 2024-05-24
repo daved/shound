@@ -1,10 +1,11 @@
-package main
+package config
 
 import (
 	"io"
 	"path/filepath"
 
 	"github.com/BurntSushi/toml"
+	"github.com/daved/shound/internal/fpath"
 )
 
 const (
@@ -14,53 +15,53 @@ const (
 type CmdsSounds map[string]string // map[CmdName]SoundFile
 
 type Config struct {
-	flags *GlobalFlags
-	file  *ConfigFile
+	Flags *GlobalFlags
+	File  *ConfigFile
 
-	help       bool
-	soundDir   FilePath
-	playCmd    string
-	cmdsSounds CmdsSounds
-	noCmdSound string
+	Help       bool
+	SoundDir   fpath.FilePath
+	PlayCmd    string
+	CmdsSounds CmdsSounds
+	NoCmdSound string
 }
 
 func NewConfig() *Config {
 	return &Config{
-		flags: &GlobalFlags{},
-		file:  &ConfigFile{},
+		Flags: &GlobalFlags{},
+		File:  &ConfigFile{},
 	}
 }
 
 func (c *Config) Resolve() error { // NOTE: A
-	c.help = c.flags.help
-	c.playCmd = c.file.PlayCmd
+	c.Help = c.Flags.Help
+	c.PlayCmd = c.File.PlayCmd
 
-	c.cmdsSounds = cloneMap(c.file.CmdSounds)
-	for k, v := range c.cmdsSounds {
+	c.CmdsSounds = cloneMap(c.File.CmdSounds)
+	for k, v := range c.CmdsSounds {
 		if k == notFoundKey {
-			c.noCmdSound = v
-			delete(c.cmdsSounds, k)
+			c.NoCmdSound = v
+			delete(c.CmdsSounds, k)
 		}
 	}
 
 	// TODO: A: handle sounddir construction appropriately
-	c.soundDir = FilePath(filepath.Join(string(c.file.SoundCache), string(c.file.Theme)))
+	c.SoundDir = fpath.FilePath(filepath.Join(string(c.File.SoundCache), string(c.File.Theme)))
 
 	return nil
 }
 
 type GlobalFlags struct {
-	help bool
+	Help bool
 }
 
 type ConfigFile struct {
-	SoundCache FilePath
+	SoundCache fpath.FilePath
 	Theme      string
 	PlayCmd    string
 	CmdSounds  map[string]string
 }
 
-func (c *ConfigFile) initFromTOML(r io.Reader) error { // TODO: handle errors | A
+func (c *ConfigFile) InitFromTOML(r io.Reader) error { // TODO: handle errors | A
 	if _, err := toml.NewDecoder(r).Decode(&c); err != nil {
 		return err
 	}

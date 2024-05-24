@@ -1,9 +1,11 @@
-package main
+package tmpls
 
 import (
 	"io"
 	"strings"
 	"text/template"
+
+	"github.com/daved/shound/internal/config"
 )
 
 var x = strings.TrimSpace(`
@@ -28,7 +30,7 @@ function command_not_found_handle() {
 `)
 
 type AliasesData struct {
-	CmdsSounds CmdsSounds
+	CmdsSounds config.CmdsSounds
 	NoCmdSound string
 	PlayCmd    string
 	SoundDir   string

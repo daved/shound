@@ -1,29 +1,31 @@
-package main
+package ccmd
 
 import (
 	"fmt"
 	"os"
 
 	"github.com/daved/flagset"
+	"github.com/daved/shound/internal/config"
+	"github.com/daved/shound/internal/tmpls"
 )
 
 type CmdTop struct {
-	cnf *Config
+	cnf *config.Config
 	fs  *flagset.FlagSet
 
-	confFilePath string
+	ConfFilePath string
 }
 
-func NewCmdTop(appName string, cnf *Config, defaultConfFile string) *CmdTop {
+func NewCmdTop(appName string, cnf *config.Config, defaultConfFile string) *CmdTop {
 	fs := flagset.New(appName)
 	c := CmdTop{
 		cnf:          cnf,
 		fs:           fs,
-		confFilePath: defaultConfFile,
+		ConfFilePath: defaultConfFile,
 	}
 
-	fs.Opt(&cnf.flags.help, "help|h", "print help output", "")
-	fs.Opt(&c.confFilePath, "conf", "path to config file", "")
+	fs.Opt(&cnf.Flags.Help, "help|h", "print help output", "")
+	fs.Opt(&c.ConfFilePath, "conf", "path to config file", "")
 
 	return &c
 }
@@ -33,7 +35,7 @@ func (c *CmdTop) FlagSet() *flagset.FlagSet {
 }
 
 func (c *CmdTop) HandleCommand() error {
-	if c.cnf.help {
+	if c.cnf.Help {
 		fmt.Fprint(os.Stdout, c.FlagSet().Help())
 		return nil
 	}
@@ -41,12 +43,12 @@ func (c *CmdTop) HandleCommand() error {
 }
 
 type CmdExport struct {
-	cnf *Config
+	cnf *config.Config
 	fs  *flagset.FlagSet
-	ts  *Tmpls
+	ts  *tmpls.Tmpls
 }
 
-func NewCmdExport(name string, cnf *Config, ts *Tmpls) *CmdExport {
+func NewCmdExport(name string, cnf *config.Config, ts *tmpls.Tmpls) *CmdExport {
 	fs := flagset.New(name)
 
 	c := CmdExport{
@@ -63,11 +65,11 @@ func (c *CmdExport) FlagSet() *flagset.FlagSet {
 }
 
 func (c *CmdExport) HandleCommand() error {
-	d := AliasesData{
-		PlayCmd:    c.cnf.playCmd,
-		SoundDir:   string(c.cnf.soundDir),
-		CmdsSounds: c.cnf.cmdsSounds,
-		NoCmdSound: c.cnf.noCmdSound,
+	d := tmpls.AliasesData{
+		PlayCmd:    c.cnf.PlayCmd,
+		SoundDir:   string(c.cnf.SoundDir),
+		CmdsSounds: c.cnf.CmdsSounds,
+		NoCmdSound: c.cnf.NoCmdSound,
 	}
 
 	return c.ts.Aliases(os.Stdout, d)
