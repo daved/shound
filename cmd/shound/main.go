@@ -45,8 +45,8 @@ func run(args []string) error { // TODO: handle errors
 	}
 	defaultConfFile := filepath.Join(homeDir, configSubdir, "config.toml")
 
-	top := ccmd.NewCmdTop(appName, cnf, defaultConfFile)
-	export := ccmd.NewCmdExport("export", cnf, ts)
+	top := ccmd.NewTop(appName, cnf, defaultConfFile)
+	export := ccmd.NewExport("export", cnf, ts)
 
 	cmdExport := clic.New(export)
 	cmd := clic.New(top, cmdExport)

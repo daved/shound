@@ -8,16 +8,16 @@ import (
 	"github.com/daved/shound/internal/tmpls"
 )
 
-type CmdExport struct {
+type Export struct {
 	cnf *config.Config
 	fs  *flagset.FlagSet
 	ts  *tmpls.Tmpls
 }
 
-func NewCmdExport(name string, cnf *config.Config, ts *tmpls.Tmpls) *CmdExport {
+func NewExport(name string, cnf *config.Config, ts *tmpls.Tmpls) *Export {
 	fs := flagset.New(name)
 
-	c := CmdExport{
+	c := Export{
 		cnf: cnf,
 		fs:  fs,
 		ts:  ts,
@@ -26,11 +26,11 @@ func NewCmdExport(name string, cnf *config.Config, ts *tmpls.Tmpls) *CmdExport {
 	return &c
 }
 
-func (c *CmdExport) FlagSet() *flagset.FlagSet {
+func (c *Export) FlagSet() *flagset.FlagSet {
 	return c.fs
 }
 
-func (c *CmdExport) HandleCommand() error {
+func (c *Export) HandleCommand() error {
 	d := tmpls.AliasesData{
 		PlayCmd:    c.cnf.PlayCmd,
 		SoundDir:   string(c.cnf.SoundDir),

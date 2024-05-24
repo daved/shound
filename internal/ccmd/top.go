@@ -8,16 +8,16 @@ import (
 	"github.com/daved/shound/internal/config"
 )
 
-type CmdTop struct {
+type Top struct {
 	cnf *config.Config
 	fs  *flagset.FlagSet
 
 	ConfFilePath string
 }
 
-func NewCmdTop(appName string, cnf *config.Config, defaultConfFile string) *CmdTop {
+func NewTop(appName string, cnf *config.Config, defaultConfFile string) *Top {
 	fs := flagset.New(appName)
-	c := CmdTop{
+	c := Top{
 		cnf:          cnf,
 		fs:           fs,
 		ConfFilePath: defaultConfFile,
@@ -29,11 +29,11 @@ func NewCmdTop(appName string, cnf *config.Config, defaultConfFile string) *CmdT
 	return &c
 }
 
-func (c *CmdTop) FlagSet() *flagset.FlagSet {
+func (c *Top) FlagSet() *flagset.FlagSet {
 	return c.fs
 }
 
-func (c *CmdTop) HandleCommand() error {
+func (c *Top) HandleCommand() error {
 	if c.cnf.Help {
 		fmt.Fprint(os.Stdout, c.FlagSet().Help())
 		return nil
