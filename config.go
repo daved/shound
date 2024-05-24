@@ -31,7 +31,7 @@ func NewConfig() *Config {
 	}
 }
 
-func (c *Config) Resolve() error {
+func (c *Config) Resolve() error { // NOTE: A
 	c.help = c.flags.help
 	c.playCmd = c.file.PlayCmd
 
@@ -43,7 +43,7 @@ func (c *Config) Resolve() error {
 		}
 	}
 
-	// TODO: handle sounddir construction appropriately
+	// TODO: A: handle sounddir construction appropriately
 	c.soundDir = FilePath(filepath.Join(string(c.file.SoundCache), string(c.file.Theme)))
 
 	return nil
@@ -60,18 +60,16 @@ type ConfigFile struct {
 	CmdSounds  map[string]string
 }
 
-func (c *ConfigFile) initFromTOML(r io.Reader) error {
+func (c *ConfigFile) initFromTOML(r io.Reader) error { // TODO: handle errors | A
 	if _, err := toml.NewDecoder(r).Decode(&c); err != nil {
-		// TODO: error
 		return err
 	}
 
 	if err := c.SoundCache.Validate(); err != nil {
-		// TODO: error
 		return err
 	}
 
-	// TODO: validate combination of soundcache+theme
+	// TODO: A: validate combination of soundcache+theme
 
 	return nil
 }

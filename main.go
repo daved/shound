@@ -28,7 +28,7 @@ func main() {
 	}
 }
 
-func run(args []string) error { // TODO: error handling
+func run(args []string) error { // TODO: handle errors
 	cnf := NewConfig()
 
 	ts, err := NewTmpls()
