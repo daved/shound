@@ -34,7 +34,7 @@ func (c *Export) HandleCommand() error {
 	d := tmpls.AliasesData{
 		PlayCmd:    c.cnf.PlayCmd,
 		SoundDir:   string(c.cnf.SoundDir),
-		CmdsSounds: c.cnf.CmdsSounds,
+		CmdsSounds: c.cnf.CmdSounds,
 		NoCmdSound: c.cnf.NoCmdSound,
 	}
 

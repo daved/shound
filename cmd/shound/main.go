@@ -13,8 +13,9 @@ import (
 )
 
 var (
-	appName      = "shound"
-	configSubdir = filepath.Join(".config", appName)
+	appName        = "shound"
+	configSubdir   = filepath.Join(".config", appName)
+	configFileName = "config.toml"
 )
 
 func main() {
@@ -32,20 +33,19 @@ func main() {
 }
 
 func run(args []string) error { // TODO: handle errors
-	cnf := config.NewConfig()
+	defConfPath, err := defaultConfigurationFilePath()
+	if err != nil {
+		return err
+	}
+
+	cnf := config.NewConfig(defConfPath)
 
 	ts, err := tmpls.NewTmpls()
 	if err != nil {
 		return err
 	}
 
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return err
-	}
-	defaultConfFile := filepath.Join(homeDir, configSubdir, "config.toml")
-
-	top := ccmd.NewTop(appName, cnf, defaultConfFile)
+	top := ccmd.NewTop(appName, cnf)
 	export := ccmd.NewExport("export", cnf, ts)
 
 	cmdExport := clic.New(export)
@@ -58,11 +58,11 @@ func run(args []string) error { // TODO: handle errors
 		return err
 	}
 
-	cnfHandle, err := os.Open(top.ConfFilePath)
+	cnfHandle, err := os.Open(cnf.UserFlags.ConfFilePath)
 	if err != nil {
 		return err
 	}
-	if err := cnf.File.InitFromTOML(cnfHandle); err != nil {
+	if err := cnf.UserFile.InitFromTOML(cnfHandle); err != nil {
 		return err
 	}
 
@@ -75,4 +75,13 @@ func run(args []string) error { // TODO: handle errors
 	}
 
 	return nil
+}
+
+func defaultConfigurationFilePath() (string, error) { // TODO: handle errors
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(homeDir, configSubdir, configFileName), nil
 }

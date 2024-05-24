@@ -15,53 +15,60 @@ const (
 type CmdsSounds map[string]string // map[CmdName]SoundFile
 
 type Config struct {
-	Flags *GlobalFlags
-	File  *ConfigFile
+	UserFlags *Flags
+	UserFile  *File
 
-	Help       bool
+	*Flags
+
+	*File
+	SoundCache struct{}
+
 	SoundDir   fpath.FilePath
-	PlayCmd    string
-	CmdsSounds CmdsSounds
 	NoCmdSound string
 }
 
-func NewConfig() *Config {
+func NewConfig(defConfPath string) *Config {
 	return &Config{
-		Flags: &GlobalFlags{},
-		File:  &ConfigFile{},
+		UserFlags: &Flags{ConfFilePath: defConfPath},
+		UserFile:  new(File),
+		Flags:     new(Flags),
+		File:      new(File),
 	}
 }
 
 func (c *Config) Resolve() error { // NOTE: A
-	c.Help = c.Flags.Help
-	c.PlayCmd = c.File.PlayCmd
+	*c.Flags = *c.UserFlags
+	*c.File = *c.UserFile
 
-	c.CmdsSounds = cloneMap(c.File.CmdSounds)
-	for k, v := range c.CmdsSounds {
+	c.CmdSounds = cloneMap(c.UserFile.CmdSounds)
+	for k, v := range c.CmdSounds {
 		if k == notFoundKey {
 			c.NoCmdSound = v
-			delete(c.CmdsSounds, k)
+			delete(c.CmdSounds, k)
 		}
 	}
 
-	// TODO: A: handle sounddir construction appropriately
-	c.SoundDir = fpath.FilePath(filepath.Join(string(c.File.SoundCache), string(c.File.Theme)))
+	// TODO: A: handle soundcache construction appropriately
+
+	soundDir := filepath.Join(string(c.UserFile.SoundCache), string(c.UserFile.Theme))
+	c.SoundDir = fpath.FilePath(soundDir)
 
 	return nil
 }
 
-type GlobalFlags struct {
-	Help bool
+type Flags struct {
+	Help         bool
+	ConfFilePath string
 }
 
-type ConfigFile struct {
+type File struct {
 	SoundCache fpath.FilePath
 	Theme      string
 	PlayCmd    string
 	CmdSounds  map[string]string
 }
 
-func (c *ConfigFile) InitFromTOML(r io.Reader) error { // TODO: handle errors | A
+func (c *File) InitFromTOML(r io.Reader) error { // TODO: handle errors | A
 	if _, err := toml.NewDecoder(r).Decode(&c); err != nil {
 		return err
 	}

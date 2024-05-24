@@ -1,4 +1,4 @@
-SoundCache = "/home/daved/.cache/shound"
+SoundCache = "/home/user/.cache/shound"
 Theme = "star_trek"
 PlayCmd = "pw-cat --playback"
 

@@ -11,20 +11,17 @@ import (
 type Top struct {
 	cnf *config.Config
 	fs  *flagset.FlagSet
-
-	ConfFilePath string
 }
 
-func NewTop(appName string, cnf *config.Config, defaultConfFile string) *Top {
+func NewTop(appName string, cnf *config.Config) *Top {
 	fs := flagset.New(appName)
 	c := Top{
-		cnf:          cnf,
-		fs:           fs,
-		ConfFilePath: defaultConfFile,
+		cnf: cnf,
+		fs:  fs,
 	}
 
-	fs.Opt(&cnf.Flags.Help, "help|h", "print help output", "")
-	fs.Opt(&c.ConfFilePath, "conf", "path to config file", "")
+	fs.Opt(&cnf.UserFlags.Help, "help|h", "print help output", "")
+	fs.Opt(&cnf.UserFlags.ConfFilePath, "conf", "path to config file", "")
 
 	return &c
 }
