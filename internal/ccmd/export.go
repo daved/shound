@@ -34,11 +34,12 @@ func (c *Export) FlagSet() *flagset.FlagSet {
 }
 
 func (c *Export) HandleCommand() error {
-	d := tmpls.AliasesData{
-		CmdsSounds:    c.cnf.CmdSounds,
-		NotFoundKey:   c.cnf.NotFoundKey,
-		NotFoundSound: c.cnf.NotFoundSound,
+	aliases := make([]string, 0, len(c.cnf.CmdSounds))
+	for alias := range c.cnf.CmdSounds {
+		aliases = append(aliases, alias)
 	}
+
+	d := tmpls.MakeAliasesData(c.cnf.NotFoundKey, c.cnf.NotFoundSound, aliases)
 
 	return c.ts.Aliases(c.out, d)
 }

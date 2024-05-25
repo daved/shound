@@ -1,17 +1,22 @@
-SoundCache = "/home/user/.cache/shound"
-Theme = "star_trek"
-PlayCmd = "pw-cat --playback"
+Active: true
+PlayCmd: "pw-play"
+ThemesDir: "/home/user/.cache/shound/themes"
+ThemeName: "star_trek"
+ThemeFallback: "fallback"
 
-[CmdSounds]
-vi = "processing2.flac"
-ls = "computerbeep_51.flac"
-mkdir = "computerbeep_9.flac"
-rm = "computerbeep_10.flac"
-mv = "computerbeep_11.flac"
-cp = "computerbeep_12.flac"
-pwd = "computerbeep_53.flac"
-clear = "computerbeep_34.flac"
-ssh = "communications_start_transmission.flac"
-go = "processing3.flac"
-ready = "computer_work_beep.flac"
-__notfound = "alert07.flac"
+CmdSoundsOverrides:
+  star_trek:
+    vi: "processing2.flac"
+    ls: "computerbeep_51.flac"
+    mkdir: "computerbeep_9.flac"
+    rm: "computerbeep_10.flac"
+    mv: "computerbeep_11.flac"
+    cp: "computerbeep_12.flac"
+    pwd: "computerbeep_53.flac"
+    clear: "computerbeep_34.flac"
+    ssh: "communications_start_transmission.flac"
+    go: "processing3.flac"
+    ready: "computer_work_beep.flac"
+    __notfound: "alert07.flac"
+  fallback:
+    __fallback: "blip.flac"

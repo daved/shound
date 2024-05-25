@@ -16,7 +16,7 @@ import (
 var (
 	appName        = "shound"
 	configSubdir   = filepath.Join(".config", appName)
-	configFileName = "config.toml"
+	configFileName = "config.yaml"
 )
 
 func main() {
@@ -65,7 +65,13 @@ func run(out io.Writer, args []string) error { // TODO: handle errors
 	if err != nil {
 		return err
 	}
-	if err := cnf.UserFile.InitFromTOML(cnfHandle); err != nil {
+	cnfBytes, err := io.ReadAll(cnfHandle)
+	_ = cnfHandle.Close()
+	if err != nil {
+		return err
+	}
+
+	if err := cnf.UserFile.InitFromYAML(cnfBytes); err != nil {
 		return err
 	}
 

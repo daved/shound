@@ -1,17 +1,20 @@
 package config
 
 import (
-	"io"
+	"errors"
 
-	"github.com/BurntSushi/toml"
 	"github.com/daved/shound/internal/fpath"
+	"gopkg.in/yaml.v3"
 )
 
 const (
 	notFoundKey = "__notfound"
 )
 
-type CmdsSounds map[string]string // map[CmdName]SoundFile
+type (
+	CmdSounds      map[string]string            // map[CommandName]SoundFile
+	ThemeOverrides map[string]map[string]string // map[ThemeName]map[CommandName]SoundFile
+)
 
 type Config struct {
 	UserFlags *Flags
@@ -19,7 +22,13 @@ type Config struct {
 
 	*Flags
 
-	*File
+	// File
+	Active        bool
+	PlayCmd       string
+	ThemesDir     fpath.FilePath
+	ThemeName     string
+	ThemeFallback string
+	CmdSounds     CmdSounds
 
 	NotFoundKey   string
 	NotFoundSound string
@@ -30,21 +39,31 @@ func NewConfig(defConfPath string) *Config {
 		UserFlags:   &Flags{ConfFilePath: defConfPath},
 		UserFile:    new(File),
 		Flags:       new(Flags),
-		File:        new(File),
 		NotFoundKey: notFoundKey,
 	}
 }
 
 func (c *Config) Resolve() error { // NOTE: A
 	*c.Flags = *c.UserFlags
-	*c.File = *c.UserFile
 
-	c.CmdSounds = cloneMap(c.UserFile.CmdSounds)
+	c.Active = c.UserFile.Active
+	c.PlayCmd = c.UserFile.PlayCmd
+	c.ThemesDir = c.UserFile.ThemesDir
+	c.ThemeName = c.UserFile.ThemeName
+	c.ThemeFallback = c.UserFile.ThemeFallback
+
+	cmdSounds, ok := c.UserFile.ThemeOverrides[c.ThemeName]
+	if !ok {
+		return errors.New("theme not found")
+	}
+	c.CmdSounds = cloneMap(cmdSounds)
+
 	for k, v := range c.CmdSounds {
 		if k == c.NotFoundKey {
 			c.NotFoundSound = v
 			delete(c.CmdSounds, k)
 		}
+
 	}
 
 	return nil
@@ -56,18 +75,20 @@ type Flags struct {
 }
 
 type File struct {
-	SoundCache fpath.FilePath
-	Theme      string
-	PlayCmd    string
-	CmdSounds  map[string]string
+	Active         bool           `yaml:"Active"`
+	PlayCmd        string         `yaml:"PlayCmd"`
+	ThemesDir      fpath.FilePath `yaml:"ThemesDir"`
+	ThemeName      string         `yaml:"ThemeName"`
+	ThemeFallback  string         `yaml:"ThemeFallback"`
+	ThemeOverrides ThemeOverrides `yaml:"CmdSoundsOverrides"`
 }
 
-func (c *File) InitFromTOML(r io.Reader) error { // TODO: handle errors | A
-	if _, err := toml.NewDecoder(r).Decode(&c); err != nil {
+func (c *File) InitFromYAML(data []byte) error { // TODO: handle errors | A
+	if err := yaml.Unmarshal(data, c); err != nil {
 		return err
 	}
 
-	if err := c.SoundCache.Validate(); err != nil {
+	if err := c.ThemesDir.Validate(); err != nil {
 		return err
 	}
 
