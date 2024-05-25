@@ -35,10 +35,9 @@ func (c *Export) FlagSet() *flagset.FlagSet {
 
 func (c *Export) HandleCommand() error {
 	d := tmpls.AliasesData{
-		PlayCmd:    c.cnf.PlayCmd,
-		SoundDir:   string(c.cnf.SoundDir),
-		CmdsSounds: c.cnf.CmdSounds,
-		NoCmdSound: c.cnf.NoCmdSound,
+		CmdsSounds:    c.cnf.CmdSounds,
+		NotFoundKey:   c.cnf.NotFoundKey,
+		NotFoundSound: c.cnf.NotFoundSound,
 	}
 
 	return c.ts.Aliases(c.out, d)

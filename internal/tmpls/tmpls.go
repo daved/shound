@@ -9,20 +9,17 @@ import (
 )
 
 var x = strings.TrimSpace(`
-{{$soundDir := .SoundDir -}} 
-
-alias _shound="{{.PlayCmd}}"
 {{range $alias, $sound := .CmdsSounds -}}
 if ! (alias {{$alias}} 2>/dev/null | grep "_shound" &>/dev/null); then
 	_shound_{{$alias}}={{$alias}}
 	alias {{$alias}} &>/dev/null && _shound_{{$alias}}="$(alias {{$alias}} | cut -d "=" -f2-)" && _shound_{{$alias}}="${_shound_{{$alias}}:1:${#_shound_{{$alias}}}-2}"
-	alias {{$alias}}="(_shound \"{{$soundDir}}/{{$sound}}\" &) && $_shound_{{$alias}}"
+	alias {{$alias}}="(\$(shound identify --playcmd {{$alias}}) &) && $_shound_{{$alias}}"
 fi
 {{end}}
 
-{{if .NoCmdSound}}
+{{if .NotFoundSound}}
 function command_not_found_handle() {
-	(_shound "{{$soundDir}}/{{.NoCmdSound}}" &)
+	($(shound identify --playcmd {{.NotFoundKey}}) &)
 	printf "%s: command not found\n" "$1" >&2
 	return 127
 }
@@ -30,10 +27,9 @@ function command_not_found_handle() {
 `)
 
 type AliasesData struct {
-	CmdsSounds config.CmdsSounds
-	NoCmdSound string
-	PlayCmd    string
-	SoundDir   string
+	CmdsSounds    config.CmdsSounds
+	NotFoundKey   string
+	NotFoundSound string
 }
 
 type Tmpls struct {
