@@ -47,10 +47,12 @@ func run(out io.Writer, args []string) error { // TODO: handle errors
 	}
 
 	top := ccmd.NewTop(out, appName, cnf)
+	identify := ccmd.NewIdentify(out, "identify", cnf)
 	export := ccmd.NewExport(out, ts, "export", cnf)
 
+	cmdIdentify := clic.New(identify)
 	cmdExport := clic.New(export)
-	cmd := clic.New(top, cmdExport)
+	cmd := clic.New(top, cmdIdentify, cmdExport)
 
 	if err := cmd.Parse(args); err != nil {
 		if perr := (*clic.ParseError)(nil); errors.As(err, &perr) {
