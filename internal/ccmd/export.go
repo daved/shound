@@ -1,7 +1,7 @@
 package ccmd
 
 import (
-	"os"
+	"io"
 
 	"github.com/daved/flagset"
 	"github.com/daved/shound/internal/config"
@@ -9,18 +9,21 @@ import (
 )
 
 type Export struct {
-	cnf *config.Config
-	fs  *flagset.FlagSet
+	out io.Writer
 	ts  *tmpls.Tmpls
+
+	fs  *flagset.FlagSet
+	cnf *config.Config
 }
 
-func NewExport(name string, cnf *config.Config, ts *tmpls.Tmpls) *Export {
+func NewExport(out io.Writer, ts *tmpls.Tmpls, name string, cnf *config.Config) *Export {
 	fs := flagset.New(name)
 
 	c := Export{
+		out: out,
+		ts:  ts,
 		cnf: cnf,
 		fs:  fs,
-		ts:  ts,
 	}
 
 	return &c
@@ -38,5 +41,5 @@ func (c *Export) HandleCommand() error {
 		NoCmdSound: c.cnf.NoCmdSound,
 	}
 
-	return c.ts.Aliases(os.Stdout, d)
+	return c.ts.Aliases(c.out, d)
 }

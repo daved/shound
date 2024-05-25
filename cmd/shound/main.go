@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -24,15 +25,15 @@ func main() {
 		os.Exit(exitCode)
 	}()
 
-	if err := run(os.Args[1:]); err != nil {
+	if err := run(os.Stdout, os.Args[1:]); err != nil {
 		if eerr, ok := err.(interface{ ExitCode() int }); ok {
 			exitCode = eerr.ExitCode()
 		}
-		fmt.Printf("%s: %v\n", appName, err)
+		fmt.Fprintf(os.Stderr, "%s: %v\n", appName, err)
 	}
 }
 
-func run(args []string) error { // TODO: handle errors
+func run(out io.Writer, args []string) error { // TODO: handle errors
 	defConfPath, err := defaultConfigurationFilePath()
 	if err != nil {
 		return err
@@ -45,8 +46,8 @@ func run(args []string) error { // TODO: handle errors
 		return err
 	}
 
-	top := ccmd.NewTop(appName, cnf)
-	export := ccmd.NewExport("export", cnf, ts)
+	top := ccmd.NewTop(out, appName, cnf)
+	export := ccmd.NewExport(out, ts, "export", cnf)
 
 	cmdExport := clic.New(export)
 	cmd := clic.New(top, cmdExport)

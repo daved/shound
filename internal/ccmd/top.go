@@ -2,22 +2,26 @@ package ccmd
 
 import (
 	"fmt"
-	"os"
+	"io"
 
 	"github.com/daved/flagset"
 	"github.com/daved/shound/internal/config"
 )
 
 type Top struct {
-	cnf *config.Config
+	out io.Writer
+
 	fs  *flagset.FlagSet
+	cnf *config.Config
 }
 
-func NewTop(appName string, cnf *config.Config) *Top {
+func NewTop(out io.Writer, appName string, cnf *config.Config) *Top {
 	fs := flagset.New(appName)
+
 	c := Top{
-		cnf: cnf,
+		out: out,
 		fs:  fs,
+		cnf: cnf,
 	}
 
 	fs.Opt(&cnf.UserFlags.Help, "help|h", "print help output", "")
@@ -32,7 +36,7 @@ func (c *Top) FlagSet() *flagset.FlagSet {
 
 func (c *Top) HandleCommand() error {
 	if c.cnf.Help {
-		fmt.Fprint(os.Stdout, c.FlagSet().Help())
+		fmt.Fprint(c.out, c.FlagSet().Help())
 		return nil
 	}
 	return nil
