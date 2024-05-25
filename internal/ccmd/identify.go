@@ -38,12 +38,11 @@ func (c *Identify) FlagSet() *flagset.FlagSet {
 
 func (c *Identify) HandleCommand() error { // NOTE: A
 	args := c.fs.Args()
-	argsLen := len(args)
-	if argsLen == 0 {
+	if len(args) == 0 {
 		// TODO: A: return appropriate error
 		return nil
 	}
-	arg := args[len(args)-1]
+	arg := args[0]
 
 	sound, ok := c.cnf.CmdSounds[arg]
 	if !ok && arg == c.cnf.NotFoundKey {
