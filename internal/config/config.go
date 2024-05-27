@@ -1,7 +1,7 @@
 package config
 
 import (
-	"errors"
+	"path/filepath"
 
 	"github.com/daved/shound/internal/fpath"
 	"gopkg.in/yaml.v3"
@@ -19,16 +19,15 @@ type (
 type Config struct {
 	UserFlags *Flags
 	UserFile  *File
+	ThemeFile *ThemeFile
 
 	*Flags
 
 	// File
-	Active        bool
-	PlayCmd       string
-	ThemesDir     fpath.FilePath
-	ThemeName     string
-	ThemeFallback string
-	CmdSounds     CmdSounds
+	Active    bool
+	PlayCmd   string
+	ThemeDir  string
+	CmdSounds CmdSounds
 
 	NotFoundKey   string
 	NotFoundSound string
@@ -38,6 +37,7 @@ func NewConfig(defConfPath string) *Config {
 	return &Config{
 		UserFlags:   &Flags{ConfFilePath: defConfPath},
 		UserFile:    new(File),
+		ThemeFile:   new(ThemeFile),
 		Flags:       new(Flags),
 		NotFoundKey: notFoundKey,
 	}
@@ -49,21 +49,19 @@ func (c *Config) Resolve() error { // NOTE: A
 	c.Active = c.UserFile.Active
 	c.PlayCmd = c.UserFile.PlayCmd
 	c.ThemesDir = c.UserFile.ThemesDir
-	c.ThemeName = c.UserFile.ThemeName
-	c.ThemeFallback = c.UserFile.ThemeFallback
+	c.ThemeDir = filepath.Join(string(c.UserFile.ThemesDir), string(c.UserFile.ThemeName))
 
-	cmdSounds, ok := c.UserFile.ThemeOverrides[c.ThemeName]
-	if !ok {
-		return errors.New("theme not found")
-	}
-	c.CmdSounds = cloneMap(cmdSounds)
-
-	for k, v := range c.CmdSounds {
-		if k == c.NotFoundKey {
-			c.NotFoundSound = v
-			delete(c.CmdSounds, k)
+	c.CmdSounds = cloneMap(c.ThemeFile.CmdSounds)
+	overrides, ok := c.UserFile.ThemeOverrides[c.UserFile.ThemeName]
+	if ok {
+		for k, v := range overrides {
+			c.CmdSounds[k] = v
 		}
+	}
 
+	if v, ok := c.CmdSounds[c.NotFoundKey]; ok {
+		c.NotFoundSound = v
+		delete(c.CmdSounds, c.NotFoundKey)
 	}
 
 	return nil
@@ -79,20 +77,31 @@ type File struct {
 	PlayCmd        string         `yaml:"PlayCmd"`
 	ThemesDir      fpath.FilePath `yaml:"ThemesDir"`
 	ThemeName      string         `yaml:"ThemeName"`
-	ThemeFallback  string         `yaml:"ThemeFallback"`
 	ThemeOverrides ThemeOverrides `yaml:"CmdSoundsOverrides"`
 }
 
-func (c *File) InitFromYAML(data []byte) error { // TODO: handle errors | A
-	if err := yaml.Unmarshal(data, c); err != nil {
+func (f *File) InitFromYAML(data []byte) error { // TODO: handle errors | A
+	if err := yaml.Unmarshal(data, f); err != nil {
 		return err
 	}
 
-	if err := c.ThemesDir.Validate(); err != nil {
+	if err := f.ThemesDir.Validate(); err != nil {
 		return err
 	}
 
 	// TODO: A: validate combination of soundcache+theme
+
+	return nil
+}
+
+type ThemeFile struct {
+	CmdSounds CmdSounds `yaml:"CmdSounds"`
+}
+
+func (f *ThemeFile) InitFromYAML(data []byte) error { // TODO: handle errors | A
+	if err := yaml.Unmarshal(data, f); err != nil {
+		return err
+	}
 
 	return nil
 }

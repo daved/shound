@@ -17,6 +17,7 @@ var (
 	appName        = "shound"
 	configSubdir   = filepath.Join(".config", appName)
 	configFileName = "config.yaml"
+	themeFileName  = "shound.yaml"
 )
 
 func main() {
@@ -72,6 +73,21 @@ func run(out io.Writer, args []string) error { // TODO: handle errors
 	}
 
 	if err := cnf.UserFile.InitFromYAML(cnfBytes); err != nil {
+		return err
+	}
+
+	themeCnfPath := filepath.Join(string(cnf.UserFile.ThemesDir), cnf.UserFile.ThemeName, themeFileName)
+	themeCnfHandle, err := os.Open(themeCnfPath)
+	if err != nil {
+		return err
+	}
+	themeCnfBytes, err := io.ReadAll(themeCnfHandle)
+	_ = themeCnfHandle.Close()
+	if err != nil {
+		return err
+	}
+
+	if err := cnf.ThemeFile.InitFromYAML(themeCnfBytes); err != nil {
 		return err
 	}
 

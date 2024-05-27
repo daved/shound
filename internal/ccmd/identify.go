@@ -49,8 +49,7 @@ func (c *Identify) HandleCommand() error { // NOTE: A
 		sound = c.cnf.NotFoundSound
 	}
 
-	soundDir := filepath.Join(string(c.cnf.ThemesDir), string(c.cnf.ThemeName))
-	soundPath := filepath.Join(soundDir, sound)
+	soundPath := filepath.Join(c.cnf.ThemeDir, sound)
 
 	if c.playCmd {
 		fmt.Fprintf(c.out, "%s %s\n", c.cnf.PlayCmd, soundPath)
