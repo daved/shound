@@ -48,7 +48,6 @@ func (c *Config) Resolve() error { // NOTE: A
 
 	c.Active = c.UserFile.Active
 	c.PlayCmd = c.UserFile.PlayCmd
-	c.ThemesDir = c.UserFile.ThemesDir
 	c.ThemeDir = filepath.Join(string(c.UserFile.ThemesDir), string(c.UserFile.ThemeName))
 
 	c.CmdSounds = cloneMap(c.ThemeFile.CmdSounds)
