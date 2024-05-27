@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/daved/clic"
 	"github.com/daved/shound/internal/ccmd"
@@ -18,6 +19,7 @@ var (
 	configSubdir   = filepath.Join(".config", appName)
 	configFileName = "config.yaml"
 	themeFileName  = "shound.yaml"
+	debugEnvVarKey = "SHOUND_DEBUG"
 )
 
 func main() {
@@ -25,6 +27,15 @@ func main() {
 	defer func() {
 		os.Exit(exitCode)
 	}()
+
+	if _, debug := os.LookupEnv(debugEnvVarKey); debug {
+		start := time.Now()
+		var end time.Time
+		defer func() {
+			end = time.Now()
+			fmt.Fprintln(os.Stderr, end.Sub(start))
+		}()
+	}
 
 	if err := run(os.Stdout, os.Args[1:]); err != nil {
 		if eerr, ok := err.(interface{ ExitCode() int }); ok {
