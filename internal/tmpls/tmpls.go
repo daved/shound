@@ -8,7 +8,7 @@ import (
 
 var x = strings.TrimSpace(`
 {{range $alias, $sanitized := .Aliases -}}
-if ! (alias {{$alias}} 2>/dev/null | grep "_shound" &>/dev/null); then
+if ! (alias {{$alias}} 2>/dev/null | grep "shound identify" &>/dev/null); then
 	_shound_{{$sanitized}}="{{$alias}}"
 	alias {{$alias}} &>/dev/null && _shound_{{$sanitized}}="$(alias {{$alias}} | cut -d "=" -f2-)" && _shound_{{$sanitized}}="${_shound_{{$sanitized}}:1:${#_shound_{{$sanitized}}}-2}"
 	alias {{$alias}}="(\$(shound identify --playcmd {{$alias}}) &) && $_shound_{{$sanitized}}"
