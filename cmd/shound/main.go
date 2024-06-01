@@ -74,7 +74,7 @@ func run(out io.Writer, args []string) error {
 		return err
 	}
 
-	themeCnfBytes, err := makeFileData(themeConfigPath(cnf))
+	themeCnfBytes, err := makeFileData(cnf.UserFile.ThemePath(themeFileName))
 	if err != nil {
 		return err
 	}
@@ -133,8 +133,4 @@ func makeFileData(path string) ([]byte, error) {
 	defer fileHandle.Close()
 
 	return io.ReadAll(fileHandle)
-}
-
-func themeConfigPath(cnf *config.Config) string {
-	return filepath.Join(string(cnf.UserFile.ThemesDir), cnf.UserFile.ThemeName, themeFileName)
 }

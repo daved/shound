@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"path/filepath"
 
 	"github.com/daved/shound/internal/fpath"
@@ -43,7 +44,7 @@ func NewConfig(defConfPath string) *Config {
 	}
 }
 
-func (c *Config) Resolve() error { // NOTE: A
+func (c *Config) Resolve() error {
 	*c.Flags = *c.UserFlags
 
 	c.Active = c.UserFile.Active
@@ -79,27 +80,33 @@ type File struct {
 	ThemeOverrides ThemeOverrides `yaml:"CmdSoundsOverrides"`
 }
 
-func (f *File) InitFromYAML(data []byte) error { // TODO: handle errors | A
+func (f *File) InitFromYAML(data []byte) error {
+	eMsg := "config: file: init from yaml: %w"
+
 	if err := yaml.Unmarshal(data, f); err != nil {
-		return err
+		return fmt.Errorf(eMsg, err)
 	}
 
 	if err := f.ThemesDir.Validate(); err != nil {
-		return err
+		return fmt.Errorf(eMsg, err)
 	}
 
-	// TODO: A: validate combination of soundcache+theme
-
 	return nil
+}
+
+func (f *File) ThemePath(fileName string) string {
+	return filepath.Join(string(f.ThemesDir), f.ThemeName, fileName)
 }
 
 type ThemeFile struct {
 	CmdSounds CmdSounds `yaml:"CmdSounds"`
 }
 
-func (f *ThemeFile) InitFromYAML(data []byte) error { // TODO: handle errors | A
+func (f *ThemeFile) InitFromYAML(data []byte) error {
+	eMsg := "config: theme file: init from yaml: %w"
+
 	if err := yaml.Unmarshal(data, f); err != nil {
-		return err
+		return fmt.Errorf(eMsg, err)
 	}
 
 	return nil
