@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/daved/shound/internal/fpath"
 	"gopkg.in/yaml.v3"
 )
 
@@ -75,7 +74,7 @@ type Flags struct {
 type File struct {
 	Active         bool           `yaml:"Active"`
 	PlayCmd        string         `yaml:"PlayCmd"`
-	ThemesDir      fpath.FilePath `yaml:"ThemesDir"`
+	ThemesDir      string         `yaml:"ThemesDir"`
 	ThemeName      string         `yaml:"ThemeName"`
 	ThemeOverrides ThemeOverrides `yaml:"CmdSoundsOverrides"`
 }
@@ -84,10 +83,6 @@ func (f *File) InitFromYAML(data []byte) error {
 	eMsg := "config: file: init from yaml: %w"
 
 	if err := yaml.Unmarshal(data, f); err != nil {
-		return fmt.Errorf(eMsg, err)
-	}
-
-	if err := f.ThemesDir.Validate(); err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
 
