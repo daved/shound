@@ -45,7 +45,7 @@ func main() {
 	}
 }
 
-func run(out io.Writer, args []string) error { // TODO: handle errors
+func run(out io.Writer, args []string) error {
 	defConfPath, err := defaultConfigurationFilePath()
 	if err != nil {
 		return err
@@ -53,18 +53,10 @@ func run(out io.Writer, args []string) error { // TODO: handle errors
 
 	cnf := config.NewConfig(defConfPath)
 
-	ts, err := tmpls.NewTmpls()
+	cmd, err := newCommand(out, cnf)
 	if err != nil {
 		return err
 	}
-
-	top := ccmd.NewTop(out, appName, cnf)
-	identify := ccmd.NewIdentify(out, "identify", cnf)
-	export := ccmd.NewExport(out, ts, "export", cnf)
-
-	cmdIdentify := clic.New(identify)
-	cmdExport := clic.New(export)
-	cmd := clic.New(top, cmdIdentify, cmdExport)
 
 	if err := cmd.Parse(args); err != nil {
 		if perr := (*clic.ParseError)(nil); errors.As(err, &perr) {
@@ -73,12 +65,7 @@ func run(out io.Writer, args []string) error { // TODO: handle errors
 		return err
 	}
 
-	cnfHandle, err := os.Open(cnf.UserFlags.ConfFilePath)
-	if err != nil {
-		return err
-	}
-	cnfBytes, err := io.ReadAll(cnfHandle)
-	_ = cnfHandle.Close()
+	cnfBytes, err := makeFileData(cnf.UserFlags.ConfFilePath)
 	if err != nil {
 		return err
 	}
@@ -87,13 +74,7 @@ func run(out io.Writer, args []string) error { // TODO: handle errors
 		return err
 	}
 
-	themeCnfPath := filepath.Join(string(cnf.UserFile.ThemesDir), cnf.UserFile.ThemeName, themeFileName)
-	themeCnfHandle, err := os.Open(themeCnfPath)
-	if err != nil {
-		return err
-	}
-	themeCnfBytes, err := io.ReadAll(themeCnfHandle)
-	_ = themeCnfHandle.Close()
+	themeCnfBytes, err := makeFileData(themeConfigPath(cnf))
 	if err != nil {
 		return err
 	}
@@ -113,11 +94,47 @@ func run(out io.Writer, args []string) error { // TODO: handle errors
 	return nil
 }
 
-func defaultConfigurationFilePath() (string, error) { // TODO: handle errors
+func defaultConfigurationFilePath() (string, error) {
+	eMsg := "default config file path: %v"
+
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf(eMsg, err)
 	}
 
 	return filepath.Join(homeDir, configSubdir, configFileName), nil
+}
+
+func newCommand(out io.Writer, cnf *config.Config) (*clic.Clic, error) {
+	eMsg := "new command: %v"
+
+	ts, err := tmpls.NewTmpls()
+	if err != nil {
+		return nil, fmt.Errorf(eMsg, err)
+	}
+
+	top := ccmd.NewTop(out, appName, cnf)
+	identify := ccmd.NewIdentify(out, "identify", cnf)
+	export := ccmd.NewExport(out, ts, "export", cnf)
+
+	cmdIdentify := clic.New(identify)
+	cmdExport := clic.New(export)
+
+	return clic.New(top, cmdIdentify, cmdExport), nil
+}
+
+func makeFileData(path string) ([]byte, error) {
+	eMsg := "make file data: %v"
+
+	fileHandle, err := os.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf(eMsg, err)
+	}
+	defer fileHandle.Close()
+
+	return io.ReadAll(fileHandle)
+}
+
+func themeConfigPath(cnf *config.Config) string {
+	return filepath.Join(string(cnf.UserFile.ThemesDir), cnf.UserFile.ThemeName, themeFileName)
 }
