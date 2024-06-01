@@ -39,7 +39,6 @@ func (c *Identify) FlagSet() *flagset.FlagSet {
 func (c *Identify) HandleCommand() error { // NOTE: A
 	args := c.fs.Args()
 	if len(args) == 0 {
-		// TODO: A: return appropriate error
 		return nil
 	}
 	arg := args[0]
