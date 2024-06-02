@@ -24,8 +24,8 @@ func NewTop(out io.Writer, appName string, cnf *config.Config) *Top {
 		cnf: cnf,
 	}
 
-	fs.Opt(&cnf.UserFlags.Help, "help|h", "print help output", "")
-	fs.Opt(&cnf.UserFlags.ConfFilePath, "conf", "path to config file", "")
+	fs.Opt(&cnf.UserFlags.Help, "help|h", "print help output")
+	fs.Opt(&cnf.UserFlags.ConfFilePath, "conf", "path to config file")
 
 	return &c
 }
@@ -36,7 +36,7 @@ func (c *Top) FlagSet() *flagset.FlagSet {
 
 func (c *Top) HandleCommand() error {
 	if c.cnf.Help {
-		fmt.Fprint(c.out, c.FlagSet().Help())
+		fmt.Fprint(c.out, c.FlagSet().Usage())
 		return nil
 	}
 	return nil

@@ -60,7 +60,7 @@ func run(out io.Writer, args []string) error {
 
 	if err := cmd.Parse(args); err != nil {
 		if perr := (*clic.ParseError)(nil); errors.As(err, &perr) {
-			fmt.Println(perr.Handler().FlagSet().Help())
+			fmt.Println(perr.Handler().FlagSet().Usage())
 		}
 		return err
 	}

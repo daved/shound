@@ -27,7 +27,7 @@ func NewIdentify(out io.Writer, name string, cnf *config.Config) *Identify {
 		cnf: cnf,
 	}
 
-	fs.Opt(&c.playCmd, "playcmd", "prefix identified sound with play command string", "")
+	fs.Opt(&c.playCmd, "playcmd", "prefix identified sound with play command string")
 
 	return &c
 }
@@ -36,7 +36,7 @@ func (c *Identify) FlagSet() *flagset.FlagSet {
 	return c.fs
 }
 
-func (c *Identify) HandleCommand() error { // NOTE: A
+func (c *Identify) HandleCommand() error {
 	args := c.fs.Args()
 	if len(args) == 0 {
 		return nil
