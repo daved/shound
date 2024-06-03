@@ -27,7 +27,7 @@ func NewIdentify(out io.Writer, name string, cnf *config.Config) *Identify {
 		cnf: cnf,
 	}
 
-	fs.Opt(&c.playCmd, "playcmd", "prefix identified sound with play command string")
+	fs.Opt(&c.playCmd, "playcmd", "Prefix identified sound with play command string.")
 
 	return &c
 }
