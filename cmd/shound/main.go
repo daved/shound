@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -99,7 +100,7 @@ func run(out io.Writer, args []string) error {
 		return err
 	}
 
-	if err := cmd.HandleCalled(); err != nil {
+	if err := cmd.HandleCalled(context.Background()); err != nil {
 		if !errors.Is(err, ccmd.ErrHelpFlag) {
 			return err
 		}

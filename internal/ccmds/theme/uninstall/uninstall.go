@@ -1,6 +1,7 @@
 package uninstall
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -43,7 +44,7 @@ func (c *Uninstall) FlagSet() *flagset.FlagSet {
 	return c.fs
 }
 
-func (c *Uninstall) HandleCommand(cmd *clic.Clic) error {
+func (c *Uninstall) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 	if err := ccmd.HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
 		return err
 	}

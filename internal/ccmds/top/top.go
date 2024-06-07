@@ -1,6 +1,7 @@
 package top
 
 import (
+	"context"
 	"errors"
 	"io"
 
@@ -43,7 +44,7 @@ func (c *Top) FlagSet() *flagset.FlagSet {
 	return c.fs
 }
 
-func (c *Top) HandleCommand(cmd *clic.Clic) error {
+func (c *Top) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 	if err := ccmd.HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
 		return err
 	}

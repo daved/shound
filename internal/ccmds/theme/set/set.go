@@ -1,6 +1,7 @@
 package set
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -43,7 +44,7 @@ func (c *Set) FlagSet() *flagset.FlagSet {
 	return c.fs
 }
 
-func (c *Set) HandleCommand(cmd *clic.Clic) error {
+func (c *Set) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 	if err := ccmd.HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
 		return err
 	}

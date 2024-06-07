@@ -1,6 +1,7 @@
 package list
 
 import (
+	"context"
 	"fmt"
 	"io"
 
@@ -40,7 +41,7 @@ func (c *List) FlagSet() *flagset.FlagSet {
 	return c.fs
 }
 
-func (c *List) HandleCommand(cmd *clic.Clic) error {
+func (c *List) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 	if err := ccmd.HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
 		return err
 	}
