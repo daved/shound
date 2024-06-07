@@ -44,7 +44,7 @@ func MakeAliasesData(notFoundKey, notFoundSound string, aliases []string) Aliase
 }
 
 type Tmpls struct {
-	Aliases func(io.Writer, AliasesData) error
+	FprintAliases func(io.Writer, AliasesData) error
 }
 
 func NewTmpls() (*Tmpls, error) {
@@ -54,7 +54,7 @@ func NewTmpls() (*Tmpls, error) {
 	}
 
 	ts := &Tmpls{
-		Aliases: func(w io.Writer, d AliasesData) error {
+		FprintAliases: func(w io.Writer, d AliasesData) error {
 			return aliasesTmpl.Execute(w, d)
 		},
 	}

@@ -43,12 +43,8 @@ func (c *Export) HandleCommand(cmd *clic.Clic) error {
 		return err
 	}
 
-	aliases := make([]string, 0, len(c.cnf.CmdSounds))
-	for alias := range c.cnf.CmdSounds {
-		aliases = append(aliases, alias)
-	}
-
+	aliases := c.cnf.CmdSounds.CmdList()
 	d := tmpls.MakeAliasesData(c.cnf.NotFoundKey, c.cnf.NotFoundSound, aliases)
 
-	return c.ts.Aliases(c.out, d)
+	return c.ts.FprintAliases(c.out, d)
 }

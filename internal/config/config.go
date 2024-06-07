@@ -11,10 +11,17 @@ const (
 	notFoundKey = "__notfound"
 )
 
-type (
-	CmdSounds      map[string]string            // map[CommandName]SoundFile
-	ThemeOverrides map[string]map[string]string // map[ThemeName]map[CommandName]SoundFile
-)
+type CmdSounds map[string]string // map[CommandName]SoundFile
+
+func (css CmdSounds) CmdList() []string {
+	cmds := make([]string, 0, len(css))
+	for cmd := range css {
+		cmds = append(cmds, cmd)
+	}
+	return cmds
+}
+
+type ThemeOverrides map[string]map[string]string // map[ThemeName]map[CommandName]SoundFile
 
 type User struct {
 	Flags     *Flags
