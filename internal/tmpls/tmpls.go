@@ -6,7 +6,7 @@ import (
 	"text/template"
 )
 
-var x = strings.TrimSpace(`
+var aliasesTmplText = strings.TrimSpace(`
 {{range $alias, $sanitized := .Aliases -}}
 if ! (alias {{$alias}} 2>/dev/null | grep "shound identify" &>/dev/null); then
 	_shound_{{$sanitized}}="{{$alias}}"
@@ -48,7 +48,7 @@ type Tmpls struct {
 }
 
 func NewTmpls() (*Tmpls, error) {
-	aliasesTmpl, err := template.New("aliases").Parse(x)
+	aliasesTmpl, err := template.New("aliases").Parse(aliasesTmplText)
 	if err != nil {
 		return nil, err
 	}
