@@ -118,8 +118,14 @@ func newCommand(out io.Writer, cnf *config.Config) (*clic.Clic, error) {
 		return nil, fmt.Errorf(eMsg, err)
 	}
 
-	identify := ccmd.NewIdentify(out, "identify", cnf).AsClic()
-	export := ccmd.NewExport(out, ts, "export", cnf).AsClic()
+	top := ccmd.NewTop(out, appName, cnf).AsClic(
+		ccmd.NewExport(out, ts, "export", cnf).AsClic(),
+		ccmd.NewIdentify(out, "identify", cnf).AsClic(),
+		ccmd.NewTheme(out, "theme", cnf).AsClic(
+			ccmd.NewThemeInstall(out, "install", cnf).AsClic(),
+			ccmd.NewThemeList(out, "list", cnf).AsClic(),
+		),
+	)
 
-	return ccmd.NewTop(out, appName, cnf).AsClic(identify, export), nil
+	return top, nil
 }
