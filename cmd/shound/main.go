@@ -18,7 +18,6 @@ import (
 	"github.com/daved/shound/internal/ccmds/theme/list"
 	"github.com/daved/shound/internal/ccmds/top"
 	"github.com/daved/shound/internal/config"
-	"github.com/daved/shound/internal/tmpls"
 )
 
 var (
@@ -118,15 +117,8 @@ func defaultConfigurationFilePath() (string, error) {
 }
 
 func newCommand(out io.Writer, cnf *config.Config) (*clic.Clic, error) {
-	eMsg := "new command: %v"
-
-	ts, err := tmpls.NewTmpls()
-	if err != nil {
-		return nil, fmt.Errorf(eMsg, err)
-	}
-
 	cmd := top.New(out, appName, cnf).AsClic(
-		export.New(out, ts, "export", cnf).AsClic(),
+		export.New(out, "export", cnf).AsClic(),
 		identify.New(out, "identify", cnf).AsClic(),
 		theme.New(out, "theme", cnf).AsClic(
 			install.New(out, "install", cnf).AsClic(),

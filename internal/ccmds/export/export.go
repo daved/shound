@@ -7,23 +7,20 @@ import (
 	"github.com/daved/flagset"
 	"github.com/daved/shound/internal/ccmds/ccmd"
 	"github.com/daved/shound/internal/config"
-	"github.com/daved/shound/internal/tmpls"
 )
 
 type Export struct {
 	out io.Writer
-	ts  *tmpls.Tmpls
 
 	fs  *flagset.FlagSet
 	cnf *config.Config
 }
 
-func New(out io.Writer, ts *tmpls.Tmpls, name string, cnf *config.Config) *Export {
+func New(out io.Writer, name string, cnf *config.Config) *Export {
 	fs := flagset.New(name)
 
 	c := Export{
 		out: out,
-		ts:  ts,
 		cnf: cnf,
 		fs:  fs,
 	}
@@ -48,7 +45,7 @@ func (c *Export) HandleCommand(cmd *clic.Clic) error {
 	}
 
 	aliases := c.cnf.CmdSounds.CmdList()
-	d := tmpls.MakeAliasesData(c.cnf.NotFoundKey, c.cnf.NotFoundSound, aliases)
+	d := makeAliasesData(c.cnf.NotFoundKey, c.cnf.NotFoundSound, aliases)
 
-	return c.ts.FprintAliases(c.out, d)
+	return fprintAliases(c.out, d)
 }
