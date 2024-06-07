@@ -48,5 +48,5 @@ func (c *Top) HandleCommand(cmd *clic.Clic) error {
 	}
 
 	_ = HandleHelpFlag(c.out, cmd, true)
-	return errors.New("subcommand is required")
+	return errors.New("no subcommand")
 }
