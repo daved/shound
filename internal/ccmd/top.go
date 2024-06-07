@@ -25,8 +25,8 @@ func NewTop(out io.Writer, appName string, cnf *config.Config) *Top {
 		cnf: cnf,
 	}
 
-	fs.Opt(&cnf.UserFlags.Help, "help|h", "Print help output.")
-	fs.Opt(&cnf.UserFlags.ConfFilePath, "conf", "Path to config file.")
+	fs.Opt(&cnf.User.Flags.Help, "help|h", "Print help output.")
+	fs.Opt(&cnf.User.Flags.ConfFilePath, "conf", "Path to config file.")
 
 	return &c
 }

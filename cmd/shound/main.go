@@ -68,21 +68,21 @@ func run(out io.Writer, args []string) error {
 		return err
 	}
 
-	cnfBytes, err := os.ReadFile(cnf.UserFlags.ConfFilePath)
+	cnfBytes, err := os.ReadFile(cnf.User.Flags.ConfFilePath)
 	if err != nil {
 		return err
 	}
 
-	if err := cnf.UserFile.InitFromYAML(cnfBytes); err != nil {
+	if err := cnf.User.File.InitFromYAML(cnfBytes); err != nil {
 		return err
 	}
 
-	themeCnfBytes, err := os.ReadFile(cnf.UserFile.ThemePath(themeFileName))
+	themeCnfBytes, err := os.ReadFile(cnf.User.File.ThemePath(themeFileName))
 	if err != nil {
 		return err
 	}
 
-	if err := cnf.ThemeFile.InitFromYAML(themeCnfBytes); err != nil {
+	if err := cnf.User.ThemeFile.InitFromYAML(themeCnfBytes); err != nil {
 		return err
 	}
 

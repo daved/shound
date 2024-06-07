@@ -16,16 +16,14 @@ type (
 	ThemeOverrides map[string]map[string]string // map[ThemeName]map[CommandName]SoundFile
 )
 
-type Config struct {
-	// untouched input values (restrict access to setup)
-
-	UserFlags *Flags
-
-	UserFile *File
-
+type User struct {
+	Flags     *Flags
+	File      *File
 	ThemeFile *ThemeFile
+}
 
-	// resolved values (use after resolve method is called)
+type Config struct {
+	User *User
 
 	*Flags
 
@@ -42,23 +40,25 @@ type Config struct {
 
 func NewConfig(defConfPath string) *Config {
 	return &Config{
-		UserFlags:   &Flags{ConfFilePath: defConfPath},
-		UserFile:    new(File),
-		ThemeFile:   new(ThemeFile),
+		User: &User{
+			Flags:     &Flags{ConfFilePath: defConfPath},
+			File:      new(File),
+			ThemeFile: new(ThemeFile),
+		},
 		Flags:       new(Flags),
 		NotFoundKey: notFoundKey,
 	}
 }
 
 func (c *Config) Resolve() error {
-	*c.Flags = *c.UserFlags
+	*c.Flags = *c.User.Flags
 
-	c.Active = c.UserFile.Active
-	c.PlayCmd = c.UserFile.PlayCmd
-	c.ThemeDir = filepath.Join(string(c.UserFile.ThemesDir), string(c.UserFile.ThemeName))
+	c.Active = c.User.File.Active
+	c.PlayCmd = c.User.File.PlayCmd
+	c.ThemeDir = filepath.Join(string(c.User.File.ThemesDir), string(c.User.File.ThemeName))
 
-	c.CmdSounds = cloneMap(c.ThemeFile.CmdSounds)
-	overrides, ok := c.UserFile.ThemeOverrides[c.UserFile.ThemeName]
+	c.CmdSounds = cloneMap(c.User.ThemeFile.CmdSounds)
+	overrides, ok := c.User.File.ThemeOverrides[c.User.File.ThemeName]
 	if ok {
 		for k, v := range overrides {
 			c.CmdSounds[k] = v
