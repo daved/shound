@@ -38,10 +38,13 @@ func main() {
 	}
 
 	if err := run(os.Stdout, os.Args[1:]); err != nil {
+		exitCode = 1
 		if eerr, ok := err.(interface{ ExitCode() int }); ok {
 			exitCode = eerr.ExitCode()
 		}
+
 		fmt.Fprintf(os.Stderr, "%s: %v\n", appName, err)
+		return
 	}
 }
 
@@ -60,12 +63,12 @@ func run(out io.Writer, args []string) error {
 
 	if err := cmd.Parse(args); err != nil {
 		if perr := (*clic.ParseError)(nil); errors.As(err, &perr) {
-			fmt.Println(perr.Handler().FlagSet().Usage())
+			fmt.Fprint(out, perr.Clic().Usage())
 		}
 		return err
 	}
 
-	cnfBytes, err := makeFileData(cnf.UserFlags.ConfFilePath)
+	cnfBytes, err := os.ReadFile(cnf.UserFlags.ConfFilePath)
 	if err != nil {
 		return err
 	}
@@ -74,7 +77,7 @@ func run(out io.Writer, args []string) error {
 		return err
 	}
 
-	themeCnfBytes, err := makeFileData(cnf.UserFile.ThemePath(themeFileName))
+	themeCnfBytes, err := os.ReadFile(cnf.UserFile.ThemePath(themeFileName))
 	if err != nil {
 		return err
 	}
@@ -87,8 +90,10 @@ func run(out io.Writer, args []string) error {
 		return err
 	}
 
-	if err := cmd.HandleCommand(); err != nil {
-		return err
+	if err := cmd.HandleCalled(); err != nil {
+		if !errors.Is(err, ccmd.ErrHelpFlag) {
+			return err
+		}
 	}
 
 	return nil
@@ -113,24 +118,12 @@ func newCommand(out io.Writer, cnf *config.Config) (*clic.Clic, error) {
 		return nil, fmt.Errorf(eMsg, err)
 	}
 
-	top := ccmd.NewTop(out, appName, cnf)
 	identify := ccmd.NewIdentify(out, "identify", cnf)
-	export := ccmd.NewExport(out, ts, "export", cnf)
-
 	cmdIdentify := clic.New(identify)
+
+	export := ccmd.NewExport(out, ts, "export", cnf)
 	cmdExport := clic.New(export)
 
+	top := ccmd.NewTop(out, appName, cnf)
 	return clic.New(top, cmdIdentify, cmdExport), nil
-}
-
-func makeFileData(path string) ([]byte, error) {
-	eMsg := "make file data: %v"
-
-	fileHandle, err := os.Open(path)
-	if err != nil {
-		return nil, fmt.Errorf(eMsg, err)
-	}
-	defer fileHandle.Close()
-
-	return io.ReadAll(fileHandle)
 }
