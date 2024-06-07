@@ -14,8 +14,11 @@ import (
 	"github.com/daved/shound/internal/ccmds/export"
 	"github.com/daved/shound/internal/ccmds/identify"
 	"github.com/daved/shound/internal/ccmds/theme"
+	"github.com/daved/shound/internal/ccmds/theme/info"
 	"github.com/daved/shound/internal/ccmds/theme/install"
 	"github.com/daved/shound/internal/ccmds/theme/list"
+	"github.com/daved/shound/internal/ccmds/theme/set"
+	"github.com/daved/shound/internal/ccmds/theme/uninstall"
 	"github.com/daved/shound/internal/ccmds/top"
 	"github.com/daved/shound/internal/config"
 )
@@ -122,7 +125,10 @@ func newCommand(out io.Writer, cnf *config.Config) (*clic.Clic, error) {
 		identify.New(out, "identify", cnf).AsClic(),
 		theme.New(out, "theme", cnf).AsClic(
 			install.New(out, "install", cnf).AsClic(),
+			set.New(out, "set", cnf).AsClic(),
 			list.New(out, "list", cnf).AsClic(),
+			info.New(out, "info", cnf).AsClic(),
+			uninstall.New(out, "uninstall", cnf).AsClic(),
 		),
 	)
 
