@@ -21,7 +21,7 @@ type Identify struct {
 	playCmd bool
 }
 
-func NewIdentify(out io.Writer, name string, cnf *config.Config) *Identify {
+func New(out io.Writer, name string, cnf *config.Config) *Identify {
 	fs := flagset.New(name)
 
 	c := Identify{

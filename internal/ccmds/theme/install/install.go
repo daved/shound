@@ -11,17 +11,17 @@ import (
 	"github.com/daved/shound/internal/config"
 )
 
-type ThemeInstall struct {
+type Install struct {
 	out io.Writer
 
 	fs  *flagset.FlagSet
 	cnf *config.Config
 }
 
-func NewThemeInstall(out io.Writer, name string, cnf *config.Config) *ThemeInstall {
+func New(out io.Writer, name string, cnf *config.Config) *Install {
 	fs := flagset.New(name)
 
-	c := ThemeInstall{
+	c := Install{
 		out: out,
 		fs:  fs,
 		cnf: cnf,
@@ -30,7 +30,7 @@ func NewThemeInstall(out io.Writer, name string, cnf *config.Config) *ThemeInsta
 	return &c
 }
 
-func (c *ThemeInstall) AsClic(subs ...*clic.Clic) *clic.Clic {
+func (c *Install) AsClic(subs ...*clic.Clic) *clic.Clic {
 	cmd := clic.New(c, subs...)
 	cmd.Meta()["CmdDesc"] = "Install a theme"
 	cmd.Meta()["SubRequired"] = true
@@ -39,11 +39,11 @@ func (c *ThemeInstall) AsClic(subs ...*clic.Clic) *clic.Clic {
 	return cmd
 }
 
-func (c *ThemeInstall) FlagSet() *flagset.FlagSet {
+func (c *Install) FlagSet() *flagset.FlagSet {
 	return c.fs
 }
 
-func (c *ThemeInstall) HandleCommand(cmd *clic.Clic) error {
+func (c *Install) HandleCommand(cmd *clic.Clic) error {
 	if err := ccmd.HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
 		return err
 	}

@@ -17,7 +17,7 @@ type Top struct {
 	cnf *config.Config
 }
 
-func NewTop(out io.Writer, name string, cnf *config.Config) *Top {
+func New(out io.Writer, name string, cnf *config.Config) *Top {
 	fs := flagset.New(name)
 
 	c := Top{

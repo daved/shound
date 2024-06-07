@@ -17,7 +17,7 @@ type Theme struct {
 	cnf *config.Config
 }
 
-func NewTheme(out io.Writer, name string, cnf *config.Config) *Theme {
+func New(out io.Writer, name string, cnf *config.Config) *Theme {
 	fs := flagset.New(name)
 
 	c := Theme{

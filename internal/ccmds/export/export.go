@@ -18,7 +18,7 @@ type Export struct {
 	cnf *config.Config
 }
 
-func NewExport(out io.Writer, ts *tmpls.Tmpls, name string, cnf *config.Config) *Export {
+func New(out io.Writer, ts *tmpls.Tmpls, name string, cnf *config.Config) *Export {
 	fs := flagset.New(name)
 
 	c := Export{
