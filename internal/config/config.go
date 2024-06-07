@@ -35,9 +35,10 @@ type Config struct {
 	*Flags
 
 	// from file
-	Active   bool
-	PlayCmd  string
-	ThemeDir string
+	Active    bool
+	PlayCmd   string
+	ThemeDir  string
+	ThemeRepo string
 
 	// from theme file
 	CmdSounds     CmdSounds
@@ -63,6 +64,7 @@ func (c *Config) Resolve() error {
 	c.Active = c.User.File.Active
 	c.PlayCmd = c.User.File.PlayCmd
 	c.ThemeDir = filepath.Join(string(c.User.File.ThemesDir), string(c.User.File.ThemeRepo))
+	c.ThemeRepo = c.User.File.ThemeRepo
 
 	c.CmdSounds = cloneMap(c.User.ThemeFile.CmdSounds)
 	overrides, ok := c.User.File.ThemeOverrides[c.User.File.ThemeRepo]

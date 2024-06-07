@@ -2,7 +2,6 @@ package info
 
 import (
 	"context"
-	"fmt"
 	"io"
 
 	"github.com/daved/clic"
@@ -46,7 +45,5 @@ func (c *Info) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 		return err
 	}
 
-	fmt.Fprintln(c.out, "info...")
-
-	return nil
+	return fprintInfo(c.out, c.cnf)
 }
