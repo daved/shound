@@ -1,7 +1,7 @@
 Active: true
 PlayCmd: "pw-play"
 ThemesDir: "/home/user/.cache/shound/themes"
-ThemeName: "star_trek"
+ThemeRepo: "star_trek"
 ThemeFallback: "fallback"
 
 CmdSoundsOverrides:

@@ -21,7 +21,7 @@ func (css CmdSounds) CmdList() []string {
 	return cmds
 }
 
-type ThemeOverrides map[string]map[string]string // map[ThemeName]map[CommandName]SoundFile
+type ThemeOverrides map[string]map[string]string // map[ThemeRepo]map[CommandName]SoundFile
 
 type User struct {
 	Flags     *Flags
@@ -62,10 +62,10 @@ func (c *Config) Resolve() error {
 
 	c.Active = c.User.File.Active
 	c.PlayCmd = c.User.File.PlayCmd
-	c.ThemeDir = filepath.Join(string(c.User.File.ThemesDir), string(c.User.File.ThemeName))
+	c.ThemeDir = filepath.Join(string(c.User.File.ThemesDir), string(c.User.File.ThemeRepo))
 
 	c.CmdSounds = cloneMap(c.User.ThemeFile.CmdSounds)
-	overrides, ok := c.User.File.ThemeOverrides[c.User.File.ThemeName]
+	overrides, ok := c.User.File.ThemeOverrides[c.User.File.ThemeRepo]
 	if ok {
 		for k, v := range overrides {
 			c.CmdSounds[k] = v
@@ -89,7 +89,7 @@ type File struct {
 	Active         bool           `yaml:"Active"`
 	PlayCmd        string         `yaml:"PlayCmd"`
 	ThemesDir      string         `yaml:"ThemesDir"`
-	ThemeName      string         `yaml:"ThemeName"`
+	ThemeRepo      string         `yaml:"ThemeRepo"`
 	ThemeOverrides ThemeOverrides `yaml:"CmdSoundsOverrides"`
 }
 
@@ -104,7 +104,7 @@ func (f *File) InitFromYAML(data []byte) error {
 }
 
 func (f *File) ThemePath(fileName string) string {
-	return filepath.Join(string(f.ThemesDir), f.ThemeName, fileName)
+	return filepath.Join(string(f.ThemesDir), f.ThemeRepo, fileName)
 }
 
 type ThemeFile struct {
