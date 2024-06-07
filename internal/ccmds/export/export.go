@@ -1,10 +1,11 @@
-package ccmd
+package export
 
 import (
 	"io"
 
 	"github.com/daved/clic"
 	"github.com/daved/flagset"
+	"github.com/daved/shound/internal/ccmds/ccmd"
 	"github.com/daved/shound/internal/config"
 	"github.com/daved/shound/internal/tmpls"
 )
@@ -42,7 +43,7 @@ func (c *Export) FlagSet() *flagset.FlagSet {
 }
 
 func (c *Export) HandleCommand(cmd *clic.Clic) error {
-	if err := HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
+	if err := ccmd.HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
 		return err
 	}
 

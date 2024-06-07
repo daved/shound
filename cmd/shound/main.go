@@ -9,7 +9,14 @@ import (
 	"time"
 
 	"github.com/daved/clic"
-	"github.com/daved/shound/internal/ccmd"
+
+	"github.com/daved/shound/internal/ccmds/ccmd"
+	"github.com/daved/shound/internal/ccmds/export"
+	"github.com/daved/shound/internal/ccmds/identify"
+	"github.com/daved/shound/internal/ccmds/theme"
+	"github.com/daved/shound/internal/ccmds/theme/install"
+	"github.com/daved/shound/internal/ccmds/theme/list"
+	"github.com/daved/shound/internal/ccmds/top"
 	"github.com/daved/shound/internal/config"
 	"github.com/daved/shound/internal/tmpls"
 )
@@ -118,14 +125,14 @@ func newCommand(out io.Writer, cnf *config.Config) (*clic.Clic, error) {
 		return nil, fmt.Errorf(eMsg, err)
 	}
 
-	top := ccmd.NewTop(out, appName, cnf).AsClic(
-		ccmd.NewExport(out, ts, "export", cnf).AsClic(),
-		ccmd.NewIdentify(out, "identify", cnf).AsClic(),
-		ccmd.NewTheme(out, "theme", cnf).AsClic(
-			ccmd.NewThemeInstall(out, "install", cnf).AsClic(),
-			ccmd.NewThemeList(out, "list", cnf).AsClic(),
+	cmd := top.NewTop(out, appName, cnf).AsClic(
+		export.NewExport(out, ts, "export", cnf).AsClic(),
+		identify.NewIdentify(out, "identify", cnf).AsClic(),
+		theme.NewTheme(out, "theme", cnf).AsClic(
+			install.NewThemeInstall(out, "install", cnf).AsClic(),
+			list.NewThemeList(out, "list", cnf).AsClic(),
 		),
 	)
 
-	return top, nil
+	return cmd, nil
 }

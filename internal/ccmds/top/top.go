@@ -1,4 +1,4 @@
-package ccmd
+package top
 
 import (
 	"errors"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/daved/clic"
 	"github.com/daved/flagset"
+	"github.com/daved/shound/internal/ccmds/ccmd"
 	"github.com/daved/shound/internal/config"
 )
 
@@ -43,10 +44,10 @@ func (c *Top) FlagSet() *flagset.FlagSet {
 }
 
 func (c *Top) HandleCommand(cmd *clic.Clic) error {
-	if err := HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
+	if err := ccmd.HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
 		return err
 	}
 
-	_ = HandleHelpFlag(c.out, cmd, true)
+	_ = ccmd.HandleHelpFlag(c.out, cmd, true)
 	return errors.New("no subcommand")
 }

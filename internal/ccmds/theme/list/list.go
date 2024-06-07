@@ -1,4 +1,4 @@
-package ccmd
+package list
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/daved/clic"
 	"github.com/daved/flagset"
+	"github.com/daved/shound/internal/ccmds/ccmd"
 	"github.com/daved/shound/internal/config"
 )
 
@@ -40,7 +41,7 @@ func (c *ThemeList) FlagSet() *flagset.FlagSet {
 }
 
 func (c *ThemeList) HandleCommand(cmd *clic.Clic) error {
-	if err := HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
+	if err := ccmd.HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
 		return err
 	}
 
