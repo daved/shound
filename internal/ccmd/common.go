@@ -6,13 +6,12 @@ import (
 	"io"
 
 	"github.com/daved/clic"
-	"github.com/daved/shound/internal/config"
 )
 
 var ErrHelpFlag = errors.New("help requested")
 
-func HandleHelpFlag(out io.Writer, cnf *config.Config, cmd *clic.Clic) error {
-	if cnf.Help {
+func HandleHelpFlag(out io.Writer, cmd *clic.Clic, needsHelp bool) error {
+	if needsHelp {
 		fmt.Fprint(out, cmd.Usage())
 		return ErrHelpFlag
 	}

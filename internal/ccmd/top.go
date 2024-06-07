@@ -16,8 +16,8 @@ type Top struct {
 	cnf *config.Config
 }
 
-func NewTop(out io.Writer, appName string, cnf *config.Config) *Top {
-	fs := flagset.New(appName)
+func NewTop(out io.Writer, name string, cnf *config.Config) *Top {
+	fs := flagset.New(name)
 
 	c := Top{
 		out: out,
@@ -43,11 +43,10 @@ func (c *Top) FlagSet() *flagset.FlagSet {
 }
 
 func (c *Top) HandleCommand(cmd *clic.Clic) error {
-	if err := HandleHelpFlag(c.out, c.cnf, cmd); err != nil {
+	if err := HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
 		return err
 	}
 
-	c.cnf.Help = true
-	_ = HandleHelpFlag(c.out, c.cnf, cmd)
+	_ = HandleHelpFlag(c.out, cmd, true)
 	return errors.New("subcommand is required")
 }

@@ -39,7 +39,7 @@ func (c *Export) FlagSet() *flagset.FlagSet {
 }
 
 func (c *Export) HandleCommand(cmd *clic.Clic) error {
-	if err := HandleHelpFlag(c.out, c.cnf, cmd); err != nil {
+	if err := HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
 		return err
 	}
 
