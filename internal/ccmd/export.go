@@ -31,7 +31,10 @@ func NewExport(out io.Writer, ts *tmpls.Tmpls, name string, cnf *config.Config) 
 }
 
 func (c *Export) AsClic(subs ...*clic.Clic) *clic.Clic {
-	return clic.New(c, subs...)
+	cmd := clic.New(c, subs...)
+	cmd.Meta()["CmdDesc"] = "Print code for a shell to evaluate"
+
+	return cmd
 }
 
 func (c *Export) FlagSet() *flagset.FlagSet {
