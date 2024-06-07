@@ -36,7 +36,7 @@ func NewIdentify(out io.Writer, name string, cnf *config.Config) *Identify {
 
 func (c *Identify) AsClic(subs ...*clic.Clic) *clic.Clic {
 	cmd := clic.New(c, subs...)
-	cmd.Meta()["ArgsHint"] = "<alias_name>"
+	cmd.Meta()["ArgsHint"] = "<command_name>"
 
 	return cmd
 }
@@ -52,7 +52,7 @@ func (c *Identify) HandleCommand(cmd *clic.Clic) error {
 
 	args := c.fs.Args()
 	if len(args) == 0 {
-		return errors.New("identify: must provide alias name")
+		return errors.New("identify: no command name")
 	}
 	arg := args[0]
 
