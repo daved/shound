@@ -5,6 +5,7 @@ import (
 	"io"
 	"path/filepath"
 
+	"github.com/daved/clic"
 	"github.com/daved/flagset"
 	"github.com/daved/shound/internal/config"
 )
@@ -36,7 +37,11 @@ func (c *Identify) FlagSet() *flagset.FlagSet {
 	return c.fs
 }
 
-func (c *Identify) HandleCommand() error {
+func (c *Identify) HandleCommand(cmd *clic.Clic) error {
+	if err := HandleHelpFlag(c.out, c.cnf, cmd); err != nil {
+		return err
+	}
+
 	args := c.fs.Args()
 	if len(args) == 0 {
 		return nil

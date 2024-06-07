@@ -1,9 +1,9 @@
 package ccmd
 
 import (
-	"fmt"
 	"io"
 
+	"github.com/daved/clic"
 	"github.com/daved/flagset"
 	"github.com/daved/shound/internal/config"
 )
@@ -34,10 +34,10 @@ func (c *Top) FlagSet() *flagset.FlagSet {
 	return c.fs
 }
 
-func (c *Top) HandleCommand() error {
-	if c.cnf.Help {
-		fmt.Fprint(c.out, c.FlagSet().Usage())
-		return nil
+func (c *Top) HandleCommand(cmd *clic.Clic) error {
+	if err := HandleHelpFlag(c.out, c.cnf, cmd); err != nil {
+		return err
 	}
+
 	return nil
 }

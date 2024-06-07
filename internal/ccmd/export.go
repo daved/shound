@@ -3,6 +3,7 @@ package ccmd
 import (
 	"io"
 
+	"github.com/daved/clic"
 	"github.com/daved/flagset"
 	"github.com/daved/shound/internal/config"
 	"github.com/daved/shound/internal/tmpls"
@@ -33,7 +34,11 @@ func (c *Export) FlagSet() *flagset.FlagSet {
 	return c.fs
 }
 
-func (c *Export) HandleCommand() error {
+func (c *Export) HandleCommand(cmd *clic.Clic) error {
+	if err := HandleHelpFlag(c.out, c.cnf, cmd); err != nil {
+		return err
+	}
+
 	aliases := make([]string, 0, len(c.cnf.CmdSounds))
 	for alias := range c.cnf.CmdSounds {
 		aliases = append(aliases, alias)
