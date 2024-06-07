@@ -1,6 +1,7 @@
 package ccmd
 
 import (
+	"errors"
 	"io"
 
 	"github.com/daved/clic"
@@ -30,6 +31,13 @@ func NewTop(out io.Writer, appName string, cnf *config.Config) *Top {
 	return &c
 }
 
+func (c *Top) AsClic(subs ...*clic.Clic) *clic.Clic {
+	cmd := clic.New(c, subs...)
+	cmd.Meta()["SubRequired"] = true
+
+	return cmd
+}
+
 func (c *Top) FlagSet() *flagset.FlagSet {
 	return c.fs
 }
@@ -39,5 +47,7 @@ func (c *Top) HandleCommand(cmd *clic.Clic) error {
 		return err
 	}
 
-	return nil
+	c.cnf.Help = true
+	_ = HandleHelpFlag(c.out, c.cnf, cmd)
+	return errors.New("subcommand is required")
 }

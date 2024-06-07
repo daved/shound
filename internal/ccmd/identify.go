@@ -1,6 +1,7 @@
 package ccmd
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"path/filepath"
@@ -33,6 +34,13 @@ func NewIdentify(out io.Writer, name string, cnf *config.Config) *Identify {
 	return &c
 }
 
+func (c *Identify) AsClic(subs ...*clic.Clic) *clic.Clic {
+	cmd := clic.New(c, subs...)
+	cmd.Meta()["ArgsHint"] = "<alias_name>"
+
+	return cmd
+}
+
 func (c *Identify) FlagSet() *flagset.FlagSet {
 	return c.fs
 }
@@ -44,7 +52,7 @@ func (c *Identify) HandleCommand(cmd *clic.Clic) error {
 
 	args := c.fs.Args()
 	if len(args) == 0 {
-		return nil
+		return errors.New("identify: must provide alias name")
 	}
 	arg := args[0]
 

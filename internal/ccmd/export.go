@@ -30,6 +30,10 @@ func NewExport(out io.Writer, ts *tmpls.Tmpls, name string, cnf *config.Config) 
 	return &c
 }
 
+func (c *Export) AsClic(subs ...*clic.Clic) *clic.Clic {
+	return clic.New(c, subs...)
+}
+
 func (c *Export) FlagSet() *flagset.FlagSet {
 	return c.fs
 }

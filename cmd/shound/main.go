@@ -118,12 +118,8 @@ func newCommand(out io.Writer, cnf *config.Config) (*clic.Clic, error) {
 		return nil, fmt.Errorf(eMsg, err)
 	}
 
-	identify := ccmd.NewIdentify(out, "identify", cnf)
-	cmdIdentify := clic.New(identify)
+	identify := ccmd.NewIdentify(out, "identify", cnf).AsClic()
+	export := ccmd.NewExport(out, ts, "export", cnf).AsClic()
 
-	export := ccmd.NewExport(out, ts, "export", cnf)
-	cmdExport := clic.New(export)
-
-	top := ccmd.NewTop(out, appName, cnf)
-	return clic.New(top, cmdIdentify, cmdExport), nil
+	return ccmd.NewTop(out, appName, cnf).AsClic(identify, export), nil
 }
