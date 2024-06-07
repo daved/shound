@@ -17,18 +17,25 @@ type (
 )
 
 type Config struct {
+	// untouched input values (restrict access to setup)
+
 	UserFlags *Flags
-	UserFile  *File
+
+	UserFile *File
+
 	ThemeFile *ThemeFile
+
+	// resolved values (use after resolve method is called)
 
 	*Flags
 
-	// File
-	Active    bool
-	PlayCmd   string
-	ThemeDir  string
-	CmdSounds CmdSounds
+	// from file
+	Active   bool
+	PlayCmd  string
+	ThemeDir string
 
+	// from theme file
+	CmdSounds     CmdSounds
 	NotFoundKey   string
 	NotFoundSound string
 }
