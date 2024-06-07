@@ -2,7 +2,6 @@ package list
 
 import (
 	"context"
-	"fmt"
 	"io"
 
 	"github.com/daved/clic"
@@ -46,7 +45,5 @@ func (c *List) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 		return err
 	}
 
-	fmt.Fprintln(c.out, "listing...")
-
-	return nil
+	return fprintList(c.out, c.cnf)
 }

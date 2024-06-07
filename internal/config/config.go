@@ -37,6 +37,7 @@ type Config struct {
 	// from file
 	Active    bool
 	PlayCmd   string
+	ThemesDir string
 	ThemeDir  string
 	ThemeRepo string
 
@@ -63,6 +64,7 @@ func (c *Config) Resolve() error {
 
 	c.Active = c.User.File.Active
 	c.PlayCmd = c.User.File.PlayCmd
+	c.ThemesDir = c.User.File.ThemesDir
 	c.ThemeDir = filepath.Join(string(c.User.File.ThemesDir), string(c.User.File.ThemeRepo))
 	c.ThemeRepo = c.User.File.ThemeRepo
 
