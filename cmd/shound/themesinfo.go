@@ -34,8 +34,12 @@ func (i *themesInfo) Themes() ([]string, error) {
 		return nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("themes info: list: %w", err)
+		return nil, fmt.Errorf("themes info: themes: %w", err)
 	}
 
 	return ts, nil
+}
+
+func (i *themesInfo) SetTheme(theme string) error {
+	return nil
 }

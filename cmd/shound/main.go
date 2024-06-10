@@ -12,7 +12,6 @@ import (
 	"github.com/daved/clic"
 
 	"github.com/daved/shound/internal/ccmds/ccmd"
-	"github.com/daved/shound/internal/thememgr"
 )
 
 func main() {
@@ -62,9 +61,8 @@ func run(appName string, out io.Writer, args []string) error {
 	}
 
 	ti := newThemesInfo(cnf.User.File.ThemesDir, themeFileName)
-	tm := thememgr.NewThemeMgr(ti)
 
-	cmd, err := newCommand(appName, out, cnf, tm)
+	cmd, err := newCommand(appName, out, cnf, ti)
 	if err != nil {
 		return err
 	}

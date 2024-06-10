@@ -12,20 +12,26 @@ import (
 	"github.com/daved/shound/internal/config"
 )
 
+type ThemeSetter interface {
+	SetTheme(string) error
+}
+
 type Set struct {
 	out io.Writer
 
 	fs  *flagset.FlagSet
 	cnf *config.Config
+	ts  ThemeSetter
 }
 
-func New(out io.Writer, name string, cnf *config.Config) *Set {
+func New(out io.Writer, name string, cnf *config.Config, ts ThemeSetter) *Set {
 	fs := flagset.New(name)
 
 	c := Set{
 		out: out,
 		fs:  fs,
 		cnf: cnf,
+		ts:  ts,
 	}
 
 	return &c
@@ -56,6 +62,7 @@ func (c *Set) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 	arg := args[0]
 
 	fmt.Fprintln(c.out, arg)
+	// check if arg is in c.tm.Themes()
 
-	return nil
+	return c.ts.SetTheme(arg)
 }

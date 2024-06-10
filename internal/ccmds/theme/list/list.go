@@ -9,25 +9,28 @@ import (
 	"github.com/daved/flagset"
 	"github.com/daved/shound/internal/ccmds/ccmd"
 	"github.com/daved/shound/internal/config"
-	"github.com/daved/shound/internal/thememgr"
 )
+
+type ThemesProvider interface {
+	Themes() ([]string, error)
+}
 
 type List struct {
 	out io.Writer
 
 	fs  *flagset.FlagSet
 	cnf *config.Config
-	tm  *thememgr.ThemeMgr
+	tp  ThemesProvider
 }
 
-func New(out io.Writer, name string, cnf *config.Config, tm *thememgr.ThemeMgr) *List {
+func New(out io.Writer, name string, cnf *config.Config, tp ThemesProvider) *List {
 	fs := flagset.New(name)
 
 	c := List{
 		out: out,
 		fs:  fs,
 		cnf: cnf,
-		tm:  tm,
+		tp:  tp,
 	}
 
 	return &c
@@ -49,7 +52,7 @@ func (c *List) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 		return err
 	}
 
-	themes, err := c.tm.Themes()
+	themes, err := c.tp.Themes()
 	if err != nil {
 		return fmt.Errorf("theme: list: %w", err)
 	}

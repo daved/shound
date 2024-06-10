@@ -14,18 +14,17 @@ import (
 	"github.com/daved/shound/internal/ccmds/theme/uninstall"
 	"github.com/daved/shound/internal/ccmds/top"
 	"github.com/daved/shound/internal/config"
-	"github.com/daved/shound/internal/thememgr"
 )
 
-func newCommand(appName string, out io.Writer, cnf *config.Config, tm *thememgr.ThemeMgr,
+func newCommand(appName string, out io.Writer, cnf *config.Config, ti *themesInfo,
 ) (*clic.Clic, error) {
 	cmd := top.New(out, appName, cnf).AsClic(
 		export.New(out, "export", cnf).AsClic(),
 		identify.New(out, "identify", cnf).AsClic(),
 		theme.New(out, "theme", cnf).AsClic(
 			install.New(out, "install", cnf).AsClic(),
-			set.New(out, "set", cnf).AsClic(),
-			list.New(out, "list", cnf, tm).AsClic(),
+			set.New(out, "set", cnf, ti).AsClic(),
+			list.New(out, "list", cnf, ti).AsClic(),
 			info.New(out, "info", cnf).AsClic(),
 			uninstall.New(out, "uninstall", cnf).AsClic(),
 		),
