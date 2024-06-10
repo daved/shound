@@ -1,27 +1,17 @@
 package config
 
 import (
-	"fmt"
 	"path/filepath"
-
-	"gopkg.in/yaml.v3"
 )
 
 const (
 	notFoundKey = "__notfound"
 )
 
-type CmdSounds map[string]string // map[CommandName]SoundFile
-
-func (css CmdSounds) CmdList() []string {
-	cmds := make([]string, 0, len(css))
-	for cmd := range css {
-		cmds = append(cmds, cmd)
-	}
-	return cmds
+type Flags struct {
+	Help         bool
+	ConfFilePath string
 }
-
-type ThemeOverrides map[string]map[string]string // map[ThemeRepo]map[CommandName]SoundFile
 
 type User struct {
 	Flags     *Flags
@@ -79,47 +69,6 @@ func (c *Config) Resolve() error {
 	if v, ok := c.CmdSounds[c.NotFoundKey]; ok {
 		c.NotFoundSound = v
 		delete(c.CmdSounds, c.NotFoundKey)
-	}
-
-	return nil
-}
-
-type Flags struct {
-	Help         bool
-	ConfFilePath string
-}
-
-type File struct {
-	Active         bool           `yaml:"Active"`
-	PlayCmd        string         `yaml:"PlayCmd"`
-	ThemesDir      string         `yaml:"ThemesDir"`
-	ThemeRepo      string         `yaml:"ThemeRepo"`
-	ThemeOverrides ThemeOverrides `yaml:"CmdSoundsOverrides"`
-}
-
-func (f *File) InitFromYAML(data []byte) error {
-	eMsg := "config: file: init from yaml: %w"
-
-	if err := yaml.Unmarshal(data, f); err != nil {
-		return fmt.Errorf(eMsg, err)
-	}
-
-	return nil
-}
-
-func (f *File) ThemePath(fileName string) string {
-	return filepath.Join(string(f.ThemesDir), f.ThemeRepo, fileName)
-}
-
-type ThemeFile struct {
-	CmdSounds CmdSounds `yaml:"CmdSounds"`
-}
-
-func (f *ThemeFile) InitFromYAML(data []byte) error {
-	eMsg := "config: theme file: init from yaml: %w"
-
-	if err := yaml.Unmarshal(data, f); err != nil {
-		return fmt.Errorf(eMsg, err)
 	}
 
 	return nil
