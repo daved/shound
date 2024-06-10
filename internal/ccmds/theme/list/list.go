@@ -8,6 +8,7 @@ import (
 	"github.com/daved/flagset"
 	"github.com/daved/shound/internal/ccmds/ccmd"
 	"github.com/daved/shound/internal/config"
+	"github.com/daved/shound/internal/thememgr"
 )
 
 type List struct {
@@ -15,15 +16,17 @@ type List struct {
 
 	fs  *flagset.FlagSet
 	cnf *config.Config
+	tm  *thememgr.ThemeMgr
 }
 
-func New(out io.Writer, name string, cnf *config.Config) *List {
+func New(out io.Writer, name string, cnf *config.Config, tm *thememgr.ThemeMgr) *List {
 	fs := flagset.New(name)
 
 	c := List{
 		out: out,
 		fs:  fs,
 		cnf: cnf,
+		tm:  tm,
 	}
 
 	return &c
@@ -45,5 +48,7 @@ func (c *List) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 		return err
 	}
 
-	return fprintList(c.out, c.cnf)
+	d := makeListData(c.cnf.ThemesDir, c.tm.Themes())
+
+	return fprintList(c.out, d)
 }

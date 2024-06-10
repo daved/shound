@@ -12,31 +12,17 @@ import (
 	"github.com/daved/clic"
 
 	"github.com/daved/shound/internal/ccmds/ccmd"
-	"github.com/daved/shound/internal/ccmds/export"
-	"github.com/daved/shound/internal/ccmds/identify"
-	"github.com/daved/shound/internal/ccmds/theme"
-	"github.com/daved/shound/internal/ccmds/theme/info"
-	"github.com/daved/shound/internal/ccmds/theme/install"
-	"github.com/daved/shound/internal/ccmds/theme/list"
-	"github.com/daved/shound/internal/ccmds/theme/set"
-	"github.com/daved/shound/internal/ccmds/theme/uninstall"
-	"github.com/daved/shound/internal/ccmds/top"
-	"github.com/daved/shound/internal/config"
-)
-
-var (
-	appName        = "shound"
-	configSubdir   = filepath.Join(".config", appName)
-	configFileName = "config.yaml"
-	themeFileName  = "shound.yaml"
-	debugEnvVarKey = "SHOUND_DEBUG"
+	"github.com/daved/shound/internal/thememgr"
 )
 
 func main() {
-	var exitCode int
-	defer func() {
-		os.Exit(exitCode)
-	}()
+	var (
+		appName        = "shound"
+		debugEnvVarKey = "SHOUND_DEBUG"
+
+		exitCode int
+	)
+	defer func() { os.Exit(exitCode) }()
 
 	if _, debug := os.LookupEnv(debugEnvVarKey); debug {
 		start := time.Now()
@@ -47,7 +33,7 @@ func main() {
 		}()
 	}
 
-	if err := run(os.Stdout, os.Args[1:]); err != nil {
+	if err := run(appName, os.Stdout, os.Args[1:]); err != nil {
 		exitCode = 1
 		if eerr, ok := err.(interface{ ExitCode() int }); ok {
 			exitCode = eerr.ExitCode()
@@ -58,15 +44,26 @@ func main() {
 	}
 }
 
-func run(out io.Writer, args []string) error {
-	defConfPath, err := defaultConfigurationFilePath()
+func run(appName string, out io.Writer, args []string) error {
+	var (
+		configSubdir   = filepath.Join(".config", appName)
+		configFileName = "config.yaml"
+		themeFileName  = "shound.yaml"
+	)
+
+	defConfPath, err := defaultConfigurationFilePath(configSubdir, configFileName)
 	if err != nil {
 		return err
 	}
 
-	cnf := config.NewConfig(defConfPath)
+	cnf, err := newConfig(defConfPath, themeFileName)
+	if err != nil {
+		return err
+	}
 
-	cmd, err := newCommand(out, cnf)
+	tm := thememgr.NewThemeMgr([]string{"flipflip.com/repo/test", "otherplace.com/project/this", "gityes.com/work/out"})
+
+	cmd, err := newCommand(out, cnf, tm)
 	if err != nil {
 		return err
 	}
@@ -78,28 +75,6 @@ func run(out io.Writer, args []string) error {
 		return err
 	}
 
-	cnfBytes, err := os.ReadFile(cnf.User.Flags.ConfFilePath)
-	if err != nil {
-		return err
-	}
-
-	if err := cnf.User.File.InitFromYAML(cnfBytes); err != nil {
-		return err
-	}
-
-	themeCnfBytes, err := os.ReadFile(cnf.User.File.ThemePath(themeFileName))
-	if err != nil {
-		return err
-	}
-
-	if err := cnf.User.ThemeFile.InitFromYAML(themeCnfBytes); err != nil {
-		return err
-	}
-
-	if err := cnf.Resolve(); err != nil {
-		return err
-	}
-
 	if err := cmd.HandleCalled(context.Background()); err != nil {
 		if !errors.Is(err, ccmd.ErrHelpFlag) {
 			return err
@@ -107,31 +82,4 @@ func run(out io.Writer, args []string) error {
 	}
 
 	return nil
-}
-
-func defaultConfigurationFilePath() (string, error) {
-	eMsg := "default config file path: %v"
-
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return "", fmt.Errorf(eMsg, err)
-	}
-
-	return filepath.Join(homeDir, configSubdir, configFileName), nil
-}
-
-func newCommand(out io.Writer, cnf *config.Config) (*clic.Clic, error) {
-	cmd := top.New(out, appName, cnf).AsClic(
-		export.New(out, "export", cnf).AsClic(),
-		identify.New(out, "identify", cnf).AsClic(),
-		theme.New(out, "theme", cnf).AsClic(
-			install.New(out, "install", cnf).AsClic(),
-			set.New(out, "set", cnf).AsClic(),
-			list.New(out, "list", cnf).AsClic(),
-			info.New(out, "info", cnf).AsClic(),
-			uninstall.New(out, "uninstall", cnf).AsClic(),
-		),
-	)
-
-	return cmd, nil
 }

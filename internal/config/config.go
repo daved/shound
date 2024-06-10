@@ -37,7 +37,7 @@ type Config struct {
 	NotFoundSound string
 }
 
-func NewConfig(defConfPath string) *Config {
+func New(defConfPath string) *Config {
 	return &Config{
 		User: &User{
 			Flags:     &Flags{ConfFilePath: defConfPath},
