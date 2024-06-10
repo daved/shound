@@ -9,7 +9,7 @@ import (
 )
 
 var infoTmplText = strings.TrimSpace(`
-Repository: {{.ThemeRepo}}
+Name: {{.ThemeRepo}}
 {{if .}}{{end}}
 `)
 

@@ -61,9 +61,10 @@ func run(appName string, out io.Writer, args []string) error {
 		return err
 	}
 
-	tm := thememgr.NewThemeMgr([]string{"flipflip.com/repo/test", "otherplace.com/project/this", "gityes.com/work/out"})
+	ti := newThemesInfo(cnf.User.File.ThemesDir, themeFileName)
+	tm := thememgr.NewThemeMgr(ti)
 
-	cmd, err := newCommand(out, cnf, tm)
+	cmd, err := newCommand(appName, out, cnf, tm)
 	if err != nil {
 		return err
 	}

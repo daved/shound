@@ -17,7 +17,8 @@ import (
 	"github.com/daved/shound/internal/thememgr"
 )
 
-func newCommand(out io.Writer, cnf *config.Config, tm *thememgr.ThemeMgr) (*clic.Clic, error) {
+func newCommand(appName string, out io.Writer, cnf *config.Config, tm *thememgr.ThemeMgr,
+) (*clic.Clic, error) {
 	cmd := top.New(out, appName, cnf).AsClic(
 		export.New(out, "export", cnf).AsClic(),
 		identify.New(out, "identify", cnf).AsClic(),

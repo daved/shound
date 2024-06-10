@@ -1,15 +1,26 @@
 package thememgr
 
-type ThemeMgr struct {
-	themes []string
+import "fmt"
+
+type ThemesProvider interface {
+	Themes() ([]string, error)
 }
 
-func NewThemeMgr(themes []string) *ThemeMgr {
+type ThemeMgr struct {
+	ts ThemesProvider
+}
+
+func NewThemeMgr(lp ThemesProvider) *ThemeMgr {
 	return &ThemeMgr{
-		themes: themes,
+		ts: lp,
 	}
 }
 
-func (m *ThemeMgr) Themes() []string {
-	return m.themes
+func (m *ThemeMgr) Themes() ([]string, error) {
+	ts, err := m.ts.Themes()
+	if err != nil {
+		return nil, fmt.Errorf("theme manager: themes: %w", err)
+	}
+
+	return ts, nil
 }

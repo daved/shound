@@ -2,6 +2,7 @@ package list
 
 import (
 	"context"
+	"fmt"
 	"io"
 
 	"github.com/daved/clic"
@@ -48,7 +49,12 @@ func (c *List) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 		return err
 	}
 
-	d := makeListData(c.cnf.ThemesDir, c.tm.Themes())
+	themes, err := c.tm.Themes()
+	if err != nil {
+		return fmt.Errorf("theme: list: %w", err)
+	}
+
+	d := makeListData(c.cnf.ThemesDir, themes)
 
 	return fprintList(c.out, d)
 }
