@@ -53,11 +53,11 @@ func (c *Set) FlagSet() *flagset.FlagSet {
 }
 
 func (c *Set) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
-	eMsg := "theme: set: %w"
-
 	if err := ccmd.HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
 		return err
 	}
+
+	eMsg := "theme: set: %w"
 
 	args := c.fs.Args()
 	if len(args) == 0 {

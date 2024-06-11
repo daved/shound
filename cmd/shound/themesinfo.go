@@ -67,3 +67,14 @@ func (i *themesInfo) SetTheme(theme string) error {
 
 	return nil
 }
+
+func (i *themesInfo) DeleteTheme(theme string) error {
+	eMsg := "themes info: delete theme: %w"
+
+	themePath := filepath.Join(i.themesDir, theme)
+	if err := os.RemoveAll(themePath); err != nil {
+		return fmt.Errorf(eMsg, err)
+	}
+
+	return nil
+}

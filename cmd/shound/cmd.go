@@ -26,7 +26,7 @@ func newCommand(appName string, out io.Writer, cnf *config.Config, ti *themesInf
 			set.New(out, "set", cnf, ti).AsClic(),
 			list.New(out, "list", cnf, ti).AsClic(),
 			info.New(out, "info", cnf).AsClic(),
-			uninstall.New(out, "uninstall", cnf).AsClic(),
+			uninstall.New(out, "uninstall", cnf, ti).AsClic(),
 		),
 	)
 
