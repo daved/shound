@@ -33,7 +33,9 @@ func newConfig(defConfPath, themeFileName string) (*config.Config, error) {
 		return nil, fmt.Errorf(eMsg, err)
 	}
 
-	themeCnfBytes, err := os.ReadFile(cnf.User.File.ThemePath(themeFileName))
+	themePath := filepath.Join(cnf.User.File.ThemesDir, cnf.User.File.ThemeRepo, themeFileName)
+
+	themeCnfBytes, err := os.ReadFile(themePath)
 	if err != nil {
 		return nil, fmt.Errorf(eMsg, err)
 	}

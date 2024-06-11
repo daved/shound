@@ -1,8 +1,9 @@
 package config
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
-	"path/filepath"
 
 	"gopkg.in/yaml.v3"
 )
@@ -27,6 +28,39 @@ func (f *File) InitFromYAML(data []byte) error {
 	return nil
 }
 
-func (f *File) ThemePath(fileName string) string {
-	return filepath.Join(string(f.ThemesDir), f.ThemeRepo, fileName)
+const (
+	FileFieldThemeRepo = "ThemeRepo"
+)
+
+func SetFileField(data []byte, name string, value any) ([]byte, error) {
+	eMsg := "config: set field: %w"
+
+	var out []byte
+	var found bool
+
+	buf := bytes.NewBuffer(data)
+	sc := bufio.NewScanner(buf)
+	for sc.Scan() {
+		bs := sc.Bytes()
+		n := []byte(name)
+		if bytes.HasPrefix(bs, n) {
+			found = true
+
+			_, comment, _ := bytes.Cut(bs, []byte("#"))
+			bs = append(n, []byte(fmt.Sprintf(`: "%v"`, value))...)
+			if len(comment) > 0 {
+				bs = append(bs, ' ', '#')
+				bs = append(bs, comment...)
+			}
+
+		}
+		out = append(out, bs...)
+		out = append(out, '\n')
+	}
+
+	if !found {
+		return nil, fmt.Errorf(eMsg, fmt.Errorf("%q not found", name))
+	}
+
+	return out, nil
 }

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"slices"
 
 	"github.com/daved/clic"
 	"github.com/daved/flagset"
@@ -13,6 +14,7 @@ import (
 )
 
 type ThemeSetter interface {
+	Themes() ([]string, error)
 	SetTheme(string) error
 }
 
@@ -51,18 +53,31 @@ func (c *Set) FlagSet() *flagset.FlagSet {
 }
 
 func (c *Set) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
+	eMsg := "theme: set: %w"
+
 	if err := ccmd.HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
 		return err
 	}
 
 	args := c.fs.Args()
 	if len(args) == 0 {
-		return errors.New("theme: set: no theme repo")
+		return fmt.Errorf(eMsg, errors.New("no theme repo"))
 	}
 	arg := args[0]
 
-	fmt.Fprintln(c.out, arg)
-	// check if arg is in c.tm.Themes()
+	themes, err := c.ts.Themes()
+	if err != nil {
+		return fmt.Errorf(eMsg, err)
+	}
 
-	return c.ts.SetTheme(arg)
+	if !slices.Contains(themes, arg) {
+		err := fmt.Errorf("%q is not a valid installed theme", arg)
+		return fmt.Errorf(eMsg, err)
+	}
+
+	if err := c.ts.SetTheme(arg); err != nil {
+		return fmt.Errorf(eMsg, err)
+	}
+
+	return nil
 }

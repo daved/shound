@@ -60,7 +60,7 @@ func run(appName string, out io.Writer, args []string) error {
 		return err
 	}
 
-	ti := newThemesInfo(cnf.User.File.ThemesDir, themeFileName)
+	ti := newThemesInfo(cnf, themeFileName)
 
 	cmd, err := newCommand(appName, out, cnf, ti)
 	if err != nil {
