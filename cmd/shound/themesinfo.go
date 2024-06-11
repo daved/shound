@@ -2,22 +2,26 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/daved/shound/internal/config"
+	"github.com/go-git/go-git/v5"
 )
 
 type themesInfo struct {
+	out           io.Writer
 	cnf           *config.Config
 	themesDir     string
 	themeFileName string
 }
 
-func newThemesInfo(cnf *config.Config, fileName string) *themesInfo {
+func newThemesInfo(out io.Writer, cnf *config.Config, fileName string) *themesInfo {
 	return &themesInfo{
+		out:           out,
 		cnf:           cnf,
 		themesDir:     cnf.User.File.ThemesDir,
 		themeFileName: fileName,
@@ -62,6 +66,31 @@ func (i *themesInfo) SetTheme(theme string) error {
 	}
 
 	if err := i.cnf.User.File.InitFromYAML(cnfBytes); err != nil {
+		return fmt.Errorf(eMsg, err)
+	}
+
+	return nil
+}
+
+func (i *themesInfo) AddTheme(theme string) error {
+	eMsg := "themes info: add theme: %w"
+
+	themePath := filepath.Join(i.themesDir, theme)
+
+	if err := os.MkdirAll(themePath, 0755); err != nil {
+		return fmt.Errorf(eMsg, err)
+	}
+
+	// TODO: check if already installed
+	// TODO: if version different, checkout correct version
+
+	// TODO: handle versions on initial clone
+	// TODO: load to tmp dir and validate before moving to themes dir
+	_, err := git.PlainClone(themePath, false, &git.CloneOptions{
+		URL:      fmt.Sprintf("https://%s", theme),
+		Progress: i.out,
+	})
+	if err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
 

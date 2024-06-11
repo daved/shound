@@ -22,11 +22,12 @@ func newCommand(appName string, out io.Writer, cnf *config.Config, ti *themesInf
 		export.New(out, "export", cnf).AsClic(),
 		identify.New(out, "identify", cnf).AsClic(),
 		theme.New(out, "theme", cnf).AsClic(
-			install.New(out, "install", cnf).AsClic(),
+			install.New(out, "install", cnf, ti).AsClic(),
 			set.New(out, "set", cnf, ti).AsClic(),
 			list.New(out, "list", cnf, ti).AsClic(),
 			info.New(out, "info", cnf).AsClic(),
 			uninstall.New(out, "uninstall", cnf, ti).AsClic(),
+			// TODO: add validate subcmd
 		),
 	)
 

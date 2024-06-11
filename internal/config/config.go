@@ -74,6 +74,8 @@ func (c *Config) Resolve() error {
 	return nil
 }
 
+// TODO: add validation method
+
 func cloneMap(in map[string]string) map[string]string {
 	out := make(map[string]string)
 

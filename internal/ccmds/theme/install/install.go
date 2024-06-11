@@ -12,20 +12,26 @@ import (
 	"github.com/daved/shound/internal/config"
 )
 
+type ThemeAdder interface {
+	AddTheme(string) error
+}
+
 type Install struct {
 	out io.Writer
 
 	fs  *flagset.FlagSet
 	cnf *config.Config
+	ta  ThemeAdder
 }
 
-func New(out io.Writer, name string, cnf *config.Config) *Install {
+func New(out io.Writer, name string, cnf *config.Config, ta ThemeAdder) *Install {
 	fs := flagset.New(name)
 
 	c := Install{
 		out: out,
 		fs:  fs,
 		cnf: cnf,
+		ta:  ta,
 	}
 
 	return &c
@@ -49,13 +55,17 @@ func (c *Install) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 		return err
 	}
 
+	eMsg := "theme: install: %w"
+
 	args := c.fs.Args()
 	if len(args) == 0 {
-		return errors.New("theme: install: no theme repo")
+		return fmt.Errorf(eMsg, errors.New("no theme repo"))
 	}
 	arg := args[0]
 
-	fmt.Fprintln(c.out, arg)
+	if err := c.ta.AddTheme(arg); err != nil {
+		return fmt.Errorf(eMsg, err)
+	}
 
 	return nil
 }
