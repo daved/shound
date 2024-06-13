@@ -50,6 +50,9 @@ func run(appName string, out io.Writer, args []string) error {
 		themeFileName  = "shound.yaml"
 	)
 
+	// TODO: ensure config and cache dirs are present
+	// TODO: support windows (config and cache dirs)
+
 	defConfPath, err := defaultConfigurationFilePath(configSubdir, configFileName)
 	if err != nil {
 		return err
