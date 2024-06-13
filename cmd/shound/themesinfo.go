@@ -91,10 +91,6 @@ func (i *themesInfo) AddTheme(theme string) error {
 		return fmt.Errorf(eMsg, err)
 	}
 
-	// TODO: check if already installed
-	// TODO: if version different, checkout correct version
-
-	// TODO: handle versions on initial clone
 	// TODO: load to tmp dir and validate before moving to themes dir
 	_, err := git.PlainClone(themePath, false, &git.CloneOptions{
 		URL:      fmt.Sprintf("https://%s", theme),

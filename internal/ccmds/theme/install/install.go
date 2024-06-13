@@ -13,6 +13,7 @@ import (
 )
 
 type ThemeAdder interface {
+	IsThemeInstalled(string) (bool, error)
 	AddTheme(string) error
 }
 
@@ -61,9 +62,21 @@ func (c *Install) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 	if len(args) == 0 {
 		return fmt.Errorf(eMsg, errors.New("no theme repo"))
 	}
-	arg := args[0]
+	theme := args[0]
 
-	if err := c.ta.AddTheme(arg); err != nil {
+	isInstalled, err := c.ta.IsThemeInstalled(theme)
+	if err != nil {
+		return fmt.Errorf(eMsg, err)
+	}
+
+	if isInstalled {
+		return ccmd.NewAlreadyInstalledError(theme)
+	}
+
+	// TODO: if version different, checkout correct version
+
+	// TODO: handle versions on initial clone
+	if err := c.ta.AddTheme(theme); err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
 
