@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"slices"
 
 	"github.com/daved/clic"
 	"github.com/daved/flagset"
@@ -14,7 +13,7 @@ import (
 )
 
 type ThemeDeleter interface {
-	Themes() ([]string, error)
+	IsThemeInstalled(string) (bool, error)
 	DeleteTheme(string) error
 }
 
@@ -69,14 +68,13 @@ func (c *Uninstall) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 		return fmt.Errorf(eMsg, errors.New("theme repo same as current theme"))
 	}
 
-	themes, err := c.td.Themes()
+	isInstalled, err := c.td.IsThemeInstalled(arg)
 	if err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
 
-	if !slices.Contains(themes, arg) {
-		err := fmt.Errorf("%q is not a valid installed theme", arg)
-		return fmt.Errorf(eMsg, err)
+	if !isInstalled {
+		return ccmd.NewNotInstalledError(arg)
 	}
 
 	if err := c.td.DeleteTheme(arg); err != nil {

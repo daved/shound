@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"slices"
 
 	"github.com/daved/clic"
 	"github.com/daved/flagset"
@@ -14,7 +13,7 @@ import (
 )
 
 type ThemeSetter interface {
-	Themes() ([]string, error)
+	IsThemeInstalled(string) (bool, error)
 	SetTheme(string) error
 }
 
@@ -63,19 +62,18 @@ func (c *Set) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 	if len(args) == 0 {
 		return fmt.Errorf(eMsg, errors.New("no theme repo"))
 	}
-	arg := args[0]
+	theme := args[0]
 
-	themes, err := c.ts.Themes()
+	isInstalled, err := c.ts.IsThemeInstalled(theme)
 	if err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
 
-	if !slices.Contains(themes, arg) {
-		err := fmt.Errorf("%q is not a valid installed theme", arg)
-		return fmt.Errorf(eMsg, err)
+	if !isInstalled {
+		return ccmd.NewNotInstalledError(theme)
 	}
 
-	if err := c.ts.SetTheme(arg); err != nil {
+	if err := c.ts.SetTheme(theme); err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
 

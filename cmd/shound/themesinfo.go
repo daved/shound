@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/daved/shound/internal/config"
@@ -29,6 +30,15 @@ func newThemesInfo(out io.Writer, cnf *config.Config, fileName string) *themesIn
 }
 
 func (i *themesInfo) Themes() ([]string, error) {
+	themes, err := i.themes()
+	if err != nil {
+		return nil, fmt.Errorf("themes info: %w", err)
+	}
+
+	return themes, nil
+}
+
+func (i *themesInfo) themes() ([]string, error) {
 	var ts []string
 
 	err := filepath.WalkDir(i.themesDir, func(path string, de fs.DirEntry, err error) error {
@@ -42,7 +52,7 @@ func (i *themesInfo) Themes() ([]string, error) {
 		return nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("themes info: themes: %w", err)
+		return nil, fmt.Errorf("themes: %w", err)
 	}
 
 	return ts, nil
@@ -106,4 +116,15 @@ func (i *themesInfo) DeleteTheme(theme string) error {
 	}
 
 	return nil
+}
+
+func (i *themesInfo) IsThemeInstalled(theme string) (bool, error) {
+	eMsg := "themes info: is theme installed: %w"
+
+	themes, err := i.themes()
+	if err != nil {
+		return false, fmt.Errorf(eMsg, err)
+	}
+
+	return slices.Contains(themes, theme), nil
 }
