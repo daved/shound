@@ -8,21 +8,10 @@ import (
 	"github.com/daved/shound/internal/config"
 )
 
-func defaultConfigurationFilePath(cnfSubdir, cnfFileName string) (string, error) {
-	eMsg := "default config file path: %v"
-
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return "", fmt.Errorf(eMsg, err)
-	}
-
-	return filepath.Join(homeDir, cnfSubdir, cnfFileName), nil
-}
-
-func newConfig(defConfPath, themeFileName string) (*config.Config, error) {
+func newConfig(defConfPath, defThemesPath, themeFileName string) (*config.Config, error) {
 	eMsg := "new config: %w"
 
-	cnf := config.New(defConfPath)
+	cnf := config.New(defConfPath, defThemesPath)
 
 	cnfBytes, err := os.ReadFile(cnf.User.Flags.ConfFilePath)
 	if err != nil {

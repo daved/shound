@@ -37,11 +37,11 @@ type Config struct {
 	NotFoundSound string
 }
 
-func New(defConfPath string) *Config {
+func New(defConfPath, defThemesPath string) *Config {
 	return &Config{
 		User: &User{
 			Flags:     &Flags{ConfFilePath: defConfPath},
-			File:      new(File),
+			File:      &File{ThemesDir: defThemesPath},
 			ThemeFile: new(ThemeFile),
 		},
 		Flags:       new(Flags),

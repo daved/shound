@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 	"path/filepath"
 
 	"github.com/daved/clic"
@@ -12,21 +13,22 @@ import (
 )
 
 func Run(appName string, out io.Writer, args []string) error {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+
 	var (
-		configSubdir   = filepath.Join(".config", appName)
 		configFileName = "config.yaml"
+		defConfigDir   = filepath.Join(homeDir, ".config", appName, configFileName)
 		themeFileName  = "shound.yaml"
+		defThemesDir   = filepath.Join(homeDir, ".cache", appName, "themes")
 	)
 
 	// TODO: ensure config and cache dirs are present
 	// TODO: support windows (config and cache dirs)
 
-	defConfPath, err := defaultConfigurationFilePath(configSubdir, configFileName)
-	if err != nil {
-		return err
-	}
-
-	cnf, err := newConfig(defConfPath, themeFileName)
+	cnf, err := newConfig(defConfigDir, defThemesDir, themeFileName)
 	if err != nil {
 		return err
 	}
