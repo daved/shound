@@ -38,14 +38,14 @@ type Config struct {
 	NotFoundSound string
 }
 
-func New(defConfPath, defThemesPath string) *Config {
+func New(defConfPath, defThemesDirPath string) *Config {
 	return &Config{
 		User: &User{
 			Flags: &Flags{
 				ConfFilePath: defConfPath,
 			},
 			File: &File{
-				ThemesDir: defThemesPath,
+				ThemesDir: defThemesDirPath,
 			},
 			ThemeFile: new(ThemeFile),
 		},

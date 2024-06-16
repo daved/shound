@@ -8,10 +8,10 @@ import (
 	"github.com/daved/shound/internal/config"
 )
 
-func newConfig(defConfPath, defThemesPath, themeFileName string) (*config.Config, error) {
+func newConfig(defConfPath, defThemesDirPath, themeFileName string) (*config.Config, error) {
 	eMsg := "new config: %w"
 
-	cnf := config.New(defConfPath, defThemesPath)
+	cnf := config.New(defConfPath, defThemesDirPath)
 
 	cnfBytes, err := os.ReadFile(cnf.User.Flags.ConfFilePath)
 	if err != nil {

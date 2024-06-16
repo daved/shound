@@ -19,16 +19,20 @@ func Run(appName string, out io.Writer, args []string) error {
 	}
 
 	var (
-		configFileName = "config.yaml"
-		defConfigDir   = filepath.Join(homeDir, ".config", appName, configFileName)
-		themeFileName  = "shound.yaml"
-		defThemesDir   = filepath.Join(homeDir, ".cache", appName, "themes")
+		configFileName   = "config.yaml"
+		defConfigDirPath = filepath.Join(homeDir, ".config", appName)
+		defConfigPath    = filepath.Join(defConfigDirPath, configFileName)
+		themeFileName    = "shound.yaml"
+		defThemesDirPath = filepath.Join(homeDir, ".cache", appName, "themes")
 	)
 
-	// TODO: ensure config and cache dirs are present
 	// TODO: support windows (config and cache dirs)
 
-	cnf, err := newConfig(defConfigDir, defThemesDir, themeFileName)
+	if err = fsEnsureDirsExist(defConfigDirPath, defThemesDirPath); err != nil {
+		return err
+	}
+
+	cnf, err := newConfig(defConfigPath, defThemesDirPath, themeFileName)
 	if err != nil {
 		return err
 	}
