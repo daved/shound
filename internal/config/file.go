@@ -11,7 +11,7 @@ import (
 type ThemeOverrides map[string]map[string]string // map[ThemeRepo]map[CommandName]SoundFile
 
 type File struct {
-	Active         bool           `yaml:"Active"`
+	Bypass         bool           `yaml:"Bypass"`
 	PlayCmd        string         `yaml:"PlayCmd"`
 	ThemesDir      string         `yaml:"ThemesDir"`
 	ThemeRepo      string         `yaml:"ThemeRepo"`

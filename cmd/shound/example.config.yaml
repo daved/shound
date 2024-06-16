@@ -1,6 +1,6 @@
-Active: true
+#Bypass: true
 PlayCmd: "pw-play"
-ThemesDir: "/home/user/.cache/shound/themes"
+#ThemesDir: "/home/user/custom-dir"
 ThemeRepo: "star_trek"
 ThemeFallback: "fallback"
 

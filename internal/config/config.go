@@ -25,7 +25,7 @@ type Config struct {
 	*Flags
 
 	// from file
-	Active    bool
+	Bypass    bool
 	PlayCmd   string
 	ThemesDir string
 	ThemeDir  string
@@ -40,8 +40,12 @@ type Config struct {
 func New(defConfPath, defThemesPath string) *Config {
 	return &Config{
 		User: &User{
-			Flags:     &Flags{ConfFilePath: defConfPath},
-			File:      &File{ThemesDir: defThemesPath},
+			Flags: &Flags{
+				ConfFilePath: defConfPath,
+			},
+			File: &File{
+				ThemesDir: defThemesPath,
+			},
 			ThemeFile: new(ThemeFile),
 		},
 		Flags:       new(Flags),
@@ -52,7 +56,7 @@ func New(defConfPath, defThemesPath string) *Config {
 func (c *Config) Resolve() error {
 	*c.Flags = *c.User.Flags
 
-	c.Active = c.User.File.Active
+	c.Bypass = c.User.File.Bypass
 	c.PlayCmd = c.User.File.PlayCmd
 	c.ThemesDir = c.User.File.ThemesDir
 	c.ThemeDir = filepath.Join(string(c.User.File.ThemesDir), string(c.User.File.ThemeRepo))
