@@ -28,12 +28,27 @@ func (f *File) InitFromYAML(data []byte) error {
 	return nil
 }
 
+func (f *File) validate() error {
+
+	eMsg := "file: validate: %s"
+
+	if f.PlayCmd == "" {
+		return fmt.Errorf(eMsg, `play command missing (PlayCmd: "pw-play")`)
+	}
+
+	if f.ThemeRepo == "" {
+		return fmt.Errorf(eMsg, `theme repo missing (ThemeRepo: "star_trek")`)
+	}
+
+	return nil
+}
+
 const (
 	FileFieldThemeRepo = "ThemeRepo"
 )
 
-func SetFileField(data []byte, name string, value any) ([]byte, error) {
-	eMsg := "config: set field: %w"
+func SetFileDataField(data []byte, name string, value any) ([]byte, error) {
+	eMsg := "config: set file data field: %w"
 
 	var out []byte
 	var found bool

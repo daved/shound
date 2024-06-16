@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"path/filepath"
 )
 
@@ -51,6 +52,16 @@ func New(defConfPath, defThemesPath string) *Config {
 		Flags:       new(Flags),
 		NotFoundKey: notFoundKey,
 	}
+}
+
+func (c *Config) Validate() error {
+	eMsg := "config: validate: %w"
+
+	if err := c.User.File.validate(); err != nil {
+		return fmt.Errorf(eMsg, err)
+	}
+
+	return nil
 }
 
 func (c *Config) Resolve() error {

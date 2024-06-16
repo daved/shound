@@ -66,7 +66,7 @@ func (i *themesInfo) SetTheme(theme string) error {
 		return fmt.Errorf(eMsg, err)
 	}
 
-	updCnfBytes, err := config.SetFileField(cnfBytes, config.FileFieldThemeRepo, theme)
+	updCnfBytes, err := config.SetFileDataField(cnfBytes, config.FileFieldThemeRepo, theme)
 	if err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
