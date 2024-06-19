@@ -2,7 +2,6 @@ package theme
 
 import (
 	"context"
-	"errors"
 	"io"
 
 	"github.com/daved/clic"
@@ -32,7 +31,7 @@ func New(out io.Writer, name string, cnf *config.Config) *Theme {
 
 func (c *Theme) AsClic(subs ...*clic.Clic) *clic.Clic {
 	cmd := clic.New(c, subs...)
-	cmd.Meta()["SubRequired"] = true
+	cmd.Meta()["CmdDesc"] = "Show info about the current theme"
 
 	return cmd
 }
@@ -46,6 +45,5 @@ func (c *Theme) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 		return err
 	}
 
-	_ = ccmd.HandleHelpFlag(c.out, cmd, true)
-	return errors.New("subcommand is required")
+	return fprintInfo(c.out, c.cnf)
 }

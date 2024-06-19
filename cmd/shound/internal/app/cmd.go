@@ -7,7 +7,6 @@ import (
 	"github.com/daved/shound/internal/ccmds/export"
 	"github.com/daved/shound/internal/ccmds/identify"
 	"github.com/daved/shound/internal/ccmds/theme"
-	"github.com/daved/shound/internal/ccmds/theme/info"
 	"github.com/daved/shound/internal/ccmds/theme/install"
 	"github.com/daved/shound/internal/ccmds/theme/list"
 	"github.com/daved/shound/internal/ccmds/theme/set"
@@ -25,7 +24,6 @@ func newCommand(appName string, out io.Writer, cnf *config.Config, ti *themesInf
 			install.New(out, "install", cnf, ti).AsClic(),
 			set.New(out, "set", cnf, ti).AsClic(),
 			list.New(out, "list", cnf, ti).AsClic(),
-			info.New(out, "info", cnf).AsClic(),
 			uninstall.New(out, "uninstall", cnf, ti).AsClic(),
 			// TODO: add validate subcmd
 		),
