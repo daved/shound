@@ -6,6 +6,7 @@ import (
 	"github.com/daved/clic"
 	"github.com/daved/shound/internal/ccmds/export"
 	"github.com/daved/shound/internal/ccmds/identify"
+	"github.com/daved/shound/internal/ccmds/play"
 	"github.com/daved/shound/internal/ccmds/root"
 	"github.com/daved/shound/internal/ccmds/theme"
 	"github.com/daved/shound/internal/ccmds/theme/install"
@@ -20,6 +21,7 @@ func newCommand(appName string, out io.Writer, cnf *config.Config, ti *themesInf
 	cmd := root.New(out, appName, cnf).AsClic(
 		export.New(out, "export", cnf).AsClic(),
 		identify.New(out, "identify", cnf).AsClic(),
+		play.New(out, "play", cnf).AsClic(),
 		theme.New(out, "theme", cnf).AsClic(
 			install.New(out, "install", cnf, ti).AsClic(),
 			set.New(out, "set", cnf, ti).AsClic(),
