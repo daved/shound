@@ -3,11 +3,10 @@
 pkgs.stdenv.mkDerivation {
   name = "shound";
   src = ./.;
-  #dontUnpack = true;
 
   nativeBuildInputs = [
     pkgs.pkg-config
-    pkgs.alsaLib
+    pkgs.alsa-lib
     pkgs.zig
     pkgs.go
   ];
@@ -18,10 +17,9 @@ pkgs.stdenv.mkDerivation {
     export ZIG_GLOBAL_CACHE_DIR=/build/cache/zig
 
     export CGO_ENABLED=1
-    export CC="zig cc -target x86_64-linux-gnu -static -I${pkgs.alsaLib}/lib"
-    export CXX="zig c++ -target x86_64-linux-gnu -static -I${pkgs.alsaLib}/lib"
+    export CC="zig cc"
 
-    go build -ldflags '-linkmode "external" -extldflags "-static"' ./cmd/shound
+    go build ./cmd/shound
   '';
 
   installPhase = ''
