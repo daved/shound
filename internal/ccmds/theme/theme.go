@@ -31,7 +31,7 @@ func New(out io.Writer, name string, cnf *config.Config) *Theme {
 
 func (c *Theme) AsClic(subs ...*clic.Clic) *clic.Clic {
 	cmd := clic.New(c, subs...)
-	cmd.Meta()["CmdDesc"] = "Show info about the current theme"
+	cmd.Meta[clic.MetaKeyCmdDesc] = "Show info about the current theme"
 
 	return cmd
 }

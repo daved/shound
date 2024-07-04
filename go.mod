@@ -3,7 +3,7 @@ module github.com/daved/shound
 go 1.21.9
 
 require (
-	github.com/daved/clic v0.0.0-20240613082850-1b7fb092fcec
+	github.com/daved/clic v0.0.0-20240704231913-3a0ba9ac113b
 	github.com/daved/flagset v0.0.0-20240610005929-722ba68b635a
 	github.com/go-git/go-git/v5 v5.12.0
 	gopkg.in/yaml.v3 v3.0.1
