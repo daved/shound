@@ -1,4 +1,4 @@
-package top
+package root
 
 import (
 	"context"
@@ -11,17 +11,17 @@ import (
 	"github.com/daved/shound/internal/config"
 )
 
-type Top struct {
+type Root struct {
 	out io.Writer
 
 	fs  *flagset.FlagSet
 	cnf *config.Config
 }
 
-func New(out io.Writer, name string, cnf *config.Config) *Top {
+func New(out io.Writer, name string, cnf *config.Config) *Root {
 	fs := flagset.New(name)
 
-	c := Top{
+	c := Root{
 		out: out,
 		fs:  fs,
 		cnf: cnf,
@@ -33,18 +33,18 @@ func New(out io.Writer, name string, cnf *config.Config) *Top {
 	return &c
 }
 
-func (c *Top) AsClic(subs ...*clic.Clic) *clic.Clic {
+func (c *Root) AsClic(subs ...*clic.Clic) *clic.Clic {
 	cmd := clic.New(c, subs...)
 	cmd.Meta()["SubRequired"] = true
 
 	return cmd
 }
 
-func (c *Top) FlagSet() *flagset.FlagSet {
+func (c *Root) FlagSet() *flagset.FlagSet {
 	return c.fs
 }
 
-func (c *Top) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
+func (c *Root) HandleCommand(ctx context.Context, cmd *clic.Clic) error {
 	if err := ccmd.HandleHelpFlag(c.out, cmd, c.cnf.Help); err != nil {
 		return err
 	}
