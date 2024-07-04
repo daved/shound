@@ -1,3 +1,6 @@
+// Package clic provides a structured multiplexer for CLI commands. In other
+// words, clic will parse a CLI command and route callers to the appropriate
+// handler.
 package clic
 
 import (
@@ -6,40 +9,57 @@ import (
 	"github.com/daved/flagset"
 )
 
+var (
+	MetaKeySkipUsage   = "SkipUsage"
+	MetaKeySubRequired = "SubRequired"
+	MetaKeyCmdDesc     = "CmdDesc"
+	MetaKeyArgsHint    = "ArgsHint"
+)
+
+// Handler describes types that can be used to handle CLI command requests. Due
+// to the nature of CLI commands containing both arguments and flags, a handler
+// must expose both a FlagSet along with a HandleCommand function.
 type Handler interface {
 	FlagSet() *flagset.FlagSet
 	HandleCommand(context.Context, *Clic) error
 }
 
+// Clic contains a CLI command handler and subcommand handlers.
 type Clic struct {
 	h        Handler
-	subs     []*Clic
-	isCalled bool
-	parent   *Clic
-	meta     map[string]any
+	Subs     []*Clic
+	IsCalled bool
+	Parent   *Clic
+	Meta     map[string]any
 }
 
+// New returns a pointer to a newly constructed instance of a Clic.
 func New(h Handler, subs ...*Clic) *Clic {
 	c := &Clic{
 		h:    h,
-		subs: subs,
-		meta: map[string]any{
-			"SkipUsage":   false,
-			"SubRequired": false,
+		Subs: subs,
+		Meta: map[string]any{
+			MetaKeySkipUsage:   false,
+			MetaKeySubRequired: false,
 		},
 	}
 
-	for _, sub := range c.subs {
-		sub.parent = c
+	for _, sub := range c.Subs {
+		sub.Parent = c
 	}
 
 	return c
 }
 
+// Parse receives command line interface arguments. Parse should be run before
+// HandleCalled is run or else *Clic cannot know which handler the user
+// requires. Parse is a separate function from HandleCalled so that calling code
+// can express behavior in between parsing and handling.
 func (c *Clic) Parse(args []string) error {
 	return parse(c, args, "")
 }
 
+// HandleCalled will run the handler that was selected during Parse processing.
 func (c *Clic) HandleCalled(ctx context.Context) error {
 	if ctx == nil {
 		ctx = context.Background()
@@ -49,36 +69,17 @@ func (c *Clic) HandleCalled(ctx context.Context) error {
 	return called.h.HandleCommand(ctx, called)
 }
 
-func (c *Clic) Parent() *Clic {
-	return c.parent
-}
-
-func (c *Clic) FlagSet() *flagset.FlagSet {
+// HandlerFlagSet exposes the underlying FlagSet being used by the Handler.
+func (c *Clic) HandlerFlagSet() *flagset.FlagSet {
 	return c.h.FlagSet()
-}
-
-func (c *Clic) Name() string {
-	return c.h.FlagSet().Name()
-}
-
-func (c *Clic) Subs() []*Clic {
-	return c.subs
-}
-
-func (c *Clic) IsCalled() bool {
-	return c.isCalled
-}
-
-func (c *Clic) Meta() map[string]any {
-	return c.meta
 }
 
 func parse(c *Clic, args []string, cmd string) error {
 	// TODO: validate sub commands, if any
 	fs := c.h.FlagSet()
 
-	c.isCalled = cmd == "" || cmd == fs.Name()
-	if !c.isCalled {
+	c.IsCalled = cmd == "" || cmd == fs.Name()
+	if !c.IsCalled {
 		return nil
 	}
 
@@ -95,7 +96,7 @@ func parse(c *Clic, args []string, cmd string) error {
 	cmd = args[len(args)-nArg]
 	args = args[len(args)-nArg+1:]
 
-	for _, sub := range c.subs {
+	for _, sub := range c.Subs {
 		if err := parse(sub, args, cmd); err != nil {
 			return err
 		}
@@ -105,8 +106,8 @@ func parse(c *Clic, args []string, cmd string) error {
 }
 
 func lastCalled(c *Clic) *Clic {
-	for _, sub := range c.subs {
-		if !sub.isCalled {
+	for _, sub := range c.Subs {
+		if !sub.IsCalled {
 			continue
 		}
 
