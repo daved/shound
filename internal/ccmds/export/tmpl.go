@@ -8,16 +8,16 @@ import (
 
 var aliasesTmplText = strings.TrimSpace(`
 {{range $alias, $sanitized := .Aliases -}}
-if ! (alias {{$alias}} 2>/dev/null | grep "shound identify" &>/dev/null); then
+if ! (alias {{$alias}} 2>/dev/null | grep "shound play" &>/dev/null); then
 	_shound_{{$sanitized}}="{{$alias}}"
 	alias {{$alias}} &>/dev/null && _shound_{{$sanitized}}="$(alias {{$alias}} | cut -d "=" -f2-)" && _shound_{{$sanitized}}="${_shound_{{$sanitized}}:1:${#_shound_{{$sanitized}}}-2}"
-	alias {{$alias}}="(\$(shound identify --playcmd {{$alias}}) &) && $_shound_{{$sanitized}}"
+	alias {{$alias}}="(shound play {{$alias}} &) && $_shound_{{$sanitized}}"
 fi
 {{end}}
 
 {{if .NotFoundSound -}}
 function command_not_found_handle() {
-	($(shound identify --playcmd {{.NotFoundKey}}) &)
+	(shound play {{.NotFoundKey}} &)
 	printf "%s: command not found\n" "$1" >&2
 	return 127
 }
