@@ -35,7 +35,7 @@ func New(out io.Writer, name string, cnf *config.Config) *Root {
 
 func (c *Root) AsClic(subs ...*clic.Clic) *clic.Clic {
 	cmd := clic.New(c, subs...)
-	cmd.Meta()["SubRequired"] = true
+	cmd.Meta[clic.MetaKeySubRequired] = true
 
 	return cmd
 }

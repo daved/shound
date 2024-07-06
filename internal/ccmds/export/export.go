@@ -31,7 +31,7 @@ func New(out io.Writer, name string, cnf *config.Config) *Export {
 
 func (c *Export) AsClic(subs ...*clic.Clic) *clic.Clic {
 	cmd := clic.New(c, subs...)
-	cmd.Meta()["CmdDesc"] = "Print code for a shell to evaluate"
+	cmd.Meta[clic.MetaKeyCmdDesc] = "Print code for a shell to evaluate"
 
 	return cmd
 }

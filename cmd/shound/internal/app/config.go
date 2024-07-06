@@ -33,11 +33,7 @@ func newConfig(defConfPath, defThemesDirPath, themeFileName string) (*config.Con
 		return nil, fmt.Errorf(eMsg, err)
 	}
 
-	if err := cnf.Validate(); err != nil {
-		return nil, fmt.Errorf(eMsg, err)
-	}
-
-	if err := cnf.Resolve(); err != nil {
+	if err := cnf.ValidateFiles(); err != nil {
 		return nil, fmt.Errorf(eMsg, err)
 	}
 

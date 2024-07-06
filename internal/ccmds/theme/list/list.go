@@ -38,7 +38,7 @@ func New(out io.Writer, name string, cnf *config.Config, tp ThemesProvider) *Lis
 
 func (c *List) AsClic(subs ...*clic.Clic) *clic.Clic {
 	cmd := clic.New(c, subs...)
-	cmd.Meta()["CmdDesc"] = "List installed themes"
+	cmd.Meta[clic.MetaKeyCmdDesc] = "List installed themes"
 
 	return cmd
 }

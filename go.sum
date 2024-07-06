@@ -18,10 +18,12 @@ github.com/cyphar/filepath-securejoin v0.2.4/go.mod h1:aPGpWjXOXUn2NCNjFvBE6aRxG
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/daved/clic v0.0.0-20240613082850-1b7fb092fcec h1:yuobXvbmJjBo4Bt3jnNZeuxIhHN5SuH+9Uw0eJ+fmsQ=
-github.com/daved/clic v0.0.0-20240613082850-1b7fb092fcec/go.mod h1:/+p8hmZhtyCL/EJWvjHXnCG3F5A8ytX/s+ThC3x4JVk=
-github.com/daved/flagset v0.0.0-20240610005929-722ba68b635a h1:qUJd/o6ixVR2yseuBE8VgQzp9J769i/RoTolJ8U3eTA=
-github.com/daved/flagset v0.0.0-20240610005929-722ba68b635a/go.mod h1:PKdNYDQo5ThKGBMAdNwoyRElFHbg/MKZsw1oPlH99vU=
+github.com/daved/clic v0.0.0-20240704231913-3a0ba9ac113b h1:uh3APyEqok7ESXEA2nATVHImFjWruExMfiXj4XnN8gc=
+github.com/daved/clic v0.0.0-20240704231913-3a0ba9ac113b/go.mod h1:/+p8hmZhtyCL/EJWvjHXnCG3F5A8ytX/s+ThC3x4JVk=
+github.com/daved/clic v0.0.0-20240706054802-2c23548f4bbb h1:ZNg/8qmOWnq113RBx9s1nxqpPN7Ryk6gN16+TVwn/gs=
+github.com/daved/clic v0.0.0-20240706054802-2c23548f4bbb/go.mod h1:yQw2ERlCcg2rjJGOkJtCH660x56cFbAVvkWK38zjs8s=
+github.com/daved/flagset v0.0.0-20240706053228-ea0473f4a173 h1:4vfhAbR/p9AB4BMHgm78tiEFknQIBzzvlHkAz1jd9jc=
+github.com/daved/flagset v0.0.0-20240706053228-ea0473f4a173/go.mod h1:PKdNYDQo5ThKGBMAdNwoyRElFHbg/MKZsw1oPlH99vU=
 github.com/elazarl/goproxy v0.0.0-20230808193330-2592e75ae04a h1:mATvB/9r/3gvcejNsXKSkQ6lcIaNec2nyfOdlTBR2lU=
 github.com/elazarl/goproxy v0.0.0-20230808193330-2592e75ae04a/go.mod h1:Ro8st/ElPeALwNFlcTpWmkr6IoMFfkjXAvTHpevnDsM=
 github.com/emirpasic/gods v1.18.1 h1:FXtiHYKDGKCW2KzwZKx0iC0PQmdlorYgdFG9jPXJ1Bc=

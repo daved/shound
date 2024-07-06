@@ -54,7 +54,7 @@ func New(defConfPath, defThemesDirPath string) *Config {
 	}
 }
 
-func (c *Config) Validate() error {
+func (c *Config) ValidateFiles() error {
 	eMsg := "config: validate: %w"
 
 	if err := c.User.File.validate(); err != nil {

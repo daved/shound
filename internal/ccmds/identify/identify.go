@@ -38,8 +38,8 @@ func New(out io.Writer, name string, cnf *config.Config) *Identify {
 
 func (c *Identify) AsClic(subs ...*clic.Clic) *clic.Clic {
 	cmd := clic.New(c, subs...)
-	cmd.Meta()["CmdDesc"] = "Print file associated with the provided command"
-	cmd.Meta()["ArgsHint"] = "<command_name>"
+	cmd.Meta[clic.MetaKeyCmdDesc] = "Print file associated with the provided command"
+	cmd.Meta[clic.MetaKeyArgsHint] = "<command_name>"
 
 	return cmd
 }
