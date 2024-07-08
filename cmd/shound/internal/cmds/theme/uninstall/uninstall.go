@@ -30,7 +30,9 @@ func New(out io.Writer, name string, cnf *config.Config, td uninstall.ThemeDelet
 }
 
 func (c *Uninstall) AsClic(subs ...*clic.Clic) *clic.Clic {
-	cc := clic.New(cmd.NewHelpWrap(c.cnf, c), subs...)
+	h := cmd.NewHelpWrap(c.cnf, c)
+
+	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeyCmdDesc] = "Uninstall a theme"
 	cc.Meta[clic.MetaKeySubRequired] = true
 	cc.Meta[clic.MetaKeyArgsHint] = "<theme_repo>"

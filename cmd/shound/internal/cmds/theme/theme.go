@@ -32,7 +32,9 @@ func New(out io.Writer, name string, cnf *config.Config) *Theme {
 }
 
 func (c *Theme) AsClic(subs ...*clic.Clic) *clic.Clic {
-	cc := clic.New(cmd.NewHelpWrap(c.cnf, c), subs...)
+	h := cmd.NewHelpWrap(c.cnf, c)
+
+	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeyCmdDesc] = "Show info about the current theme"
 
 	return cc

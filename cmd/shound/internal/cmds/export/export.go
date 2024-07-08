@@ -30,7 +30,9 @@ func New(out io.Writer, name string, cnf *config.Config) *Export {
 }
 
 func (c *Export) AsClic(subs ...*clic.Clic) *clic.Clic {
-	cc := clic.New(cmd.NewHelpWrap(c.cnf, c), subs...)
+	h := cmd.NewHelpWrap(c.cnf, c)
+
+	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeyCmdDesc] = "Print code for a shell to evaluate"
 
 	return cc

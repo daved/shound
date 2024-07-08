@@ -30,7 +30,9 @@ func New(name string, cnf *config.Config) *Root {
 }
 
 func (c *Root) AsClic(subs ...*clic.Clic) *clic.Clic {
-	cc := clic.New(cmd.NewHelpWrap(c.cnf, c), subs...)
+	h := cmd.NewHelpWrap(c.cnf, c)
+
+	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeySubRequired] = true
 
 	return cc
