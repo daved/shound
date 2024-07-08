@@ -55,7 +55,11 @@ func Run(appName string, out io.Writer, args []string) error {
 		return err
 	}
 
-	if err := cmd.HandleCalled(context.Background()); err != nil {
+	if err := cmd.Handle(context.Background()); err != nil {
+		if uerr := (*ccmd.UsageError)(nil); errors.As(err, &uerr) {
+			fmt.Fprint(out, cmd.Called().Usage())
+		}
+
 		if !errors.Is(err, ccmd.ErrHelpFlag) {
 			return err
 		}
