@@ -2,6 +2,7 @@ package identify
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"path/filepath"
@@ -34,6 +35,10 @@ func New(out io.Writer, cnf *Config) *Identify {
 }
 
 func (a *Identify) Run(ctx context.Context, cmdName string) error {
+	if cmdName == "" {
+		return errors.New("identify: no command name")
+	}
+
 	gCnf := a.cnf.global
 
 	sound, ok := gCnf.CmdSounds[cmdName]

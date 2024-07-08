@@ -2,7 +2,6 @@ package identify
 
 import (
 	"context"
-	"errors"
 	"io"
 
 	"github.com/daved/clic"
@@ -46,11 +45,7 @@ func (c *Identify) FlagSet() *flagset.FlagSet {
 }
 
 func (c *Identify) HandleCommand(ctx context.Context) error {
-	args := c.fs.Args()
-	if len(args) == 0 {
-		return errors.New("identify: no command name")
-	}
-	cmdName := args[0]
+	cmdName := c.fs.Arg(0)
 
 	return c.act.Run(ctx, cmdName)
 }

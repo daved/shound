@@ -2,8 +2,6 @@ package install
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"io"
 
 	"github.com/daved/clic"
@@ -45,11 +43,7 @@ func (c *Install) FlagSet() *flagset.FlagSet {
 }
 
 func (c *Install) HandleCommand(ctx context.Context) error {
-	args := c.fs.Args()
-	if len(args) == 0 {
-		return fmt.Errorf("theme: install: %w", errors.New("no theme repo"))
-	}
-	themeRepo := args[0]
+	themeRepo := c.fs.Arg(0)
 
 	return c.act.Run(ctx, themeRepo)
 }

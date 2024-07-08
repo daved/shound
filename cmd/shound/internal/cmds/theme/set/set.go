@@ -2,8 +2,6 @@ package set
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"io"
 
 	"github.com/daved/clic"
@@ -45,11 +43,7 @@ func (c *Set) FlagSet() *flagset.FlagSet {
 }
 
 func (c *Set) HandleCommand(ctx context.Context) error {
-	args := c.fs.Args()
-	if len(args) == 0 {
-		return fmt.Errorf("theme: set: %w", errors.New("no theme repo"))
-	}
-	themeRepo := args[0]
+	themeRepo := c.fs.Arg(0)
 
 	return c.act.Run(ctx, themeRepo)
 }

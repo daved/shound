@@ -2,6 +2,7 @@ package set
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 
@@ -27,6 +28,10 @@ func New(out io.Writer, ts ThemeSetter) *Set {
 
 func (a *Set) Run(ctx context.Context, themeRepo string) error {
 	eMsg := "theme: set: %w"
+
+	if themeRepo == "" {
+		return fmt.Errorf(eMsg, errors.New("no theme repo"))
+	}
 
 	isInstalled, err := a.ts.IsThemeInstalled(themeRepo)
 	if err != nil {

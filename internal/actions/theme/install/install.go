@@ -2,6 +2,7 @@ package install
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 
@@ -40,6 +41,10 @@ func New(out io.Writer, cnf *Config, ta ThemeAdder) *Install {
 
 func (a *Install) Run(ctx context.Context, themeRepo string) error {
 	eMsg := "theme: install: %w"
+
+	if themeRepo == "" {
+		return fmt.Errorf(eMsg, errors.New("no theme repo"))
+	}
 
 	isInstalled, err := a.ta.IsThemeInstalled(themeRepo)
 	if err != nil {

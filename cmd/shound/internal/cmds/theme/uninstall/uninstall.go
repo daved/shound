@@ -2,8 +2,6 @@ package uninstall
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"io"
 
 	"github.com/daved/clic"
@@ -45,11 +43,7 @@ func (c *Uninstall) FlagSet() *flagset.FlagSet {
 }
 
 func (c *Uninstall) HandleCommand(ctx context.Context) error {
-	args := c.fs.Args()
-	if len(args) == 0 {
-		return fmt.Errorf("theme: uninstall: %w", errors.New("no theme repo"))
-	}
-	themeRepo := args[0]
+	themeRepo := c.fs.Arg(0)
 
 	return c.act.Run(ctx, themeRepo)
 }

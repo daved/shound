@@ -42,6 +42,10 @@ func New(out io.Writer, cnf *Config, td ThemeDeleter) *Uninstall {
 func (a *Uninstall) Run(ctx context.Context, themeRepo string) error {
 	eMsg := "theme: uninstall: %w"
 
+	if themeRepo == "" {
+		return fmt.Errorf(eMsg, errors.New("no theme repo"))
+	}
+
 	if themeRepo == a.cnf.global.ThemeRepo {
 		return fmt.Errorf(eMsg, errors.New("theme repo same as current theme"))
 	}
