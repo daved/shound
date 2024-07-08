@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/daved/clic"
-	"github.com/daved/shound/internal/ccmds/ccmd"
+	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
 )
 
 func Run(appName string, out io.Writer, args []string) error {
@@ -39,12 +39,12 @@ func Run(appName string, out io.Writer, args []string) error {
 
 	ti := newThemesInfo(out, cnf, themeFileName)
 
-	cmd, err := newCommand(appName, out, cnf, ti)
+	cc, err := newCommand(appName, out, cnf, ti)
 	if err != nil {
 		return err
 	}
 
-	if err := cmd.Parse(args); err != nil {
+	if err := cc.Parse(args); err != nil {
 		if perr := (*clic.ParseError)(nil); errors.As(err, &perr) {
 			fmt.Fprint(out, perr.Clic().Usage())
 		}
@@ -55,12 +55,12 @@ func Run(appName string, out io.Writer, args []string) error {
 		return err
 	}
 
-	if err := cmd.Handle(context.Background()); err != nil {
-		if uerr := (*ccmd.UsageError)(nil); errors.As(err, &uerr) {
-			fmt.Fprint(out, cmd.Called().Usage())
+	if err := cc.Handle(context.Background()); err != nil {
+		if uerr := (*cmd.UsageError)(nil); errors.As(err, &uerr) {
+			fmt.Fprint(out, cc.Called().Usage())
 		}
 
-		if !errors.Is(err, ccmd.ErrHelpFlag) {
+		if !errors.Is(err, cmd.ErrHelpFlag) {
 			return err
 		}
 	}

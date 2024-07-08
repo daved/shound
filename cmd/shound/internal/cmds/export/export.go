@@ -6,34 +6,34 @@ import (
 
 	"github.com/daved/clic"
 	"github.com/daved/flagset"
-	"github.com/daved/shound/internal/ccmds/ccmd"
+	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
+	"github.com/daved/shound/internal/actions/export"
 	"github.com/daved/shound/internal/config"
 )
 
 type Export struct {
-	out io.Writer
-
 	fs  *flagset.FlagSet
+	act *export.Export
 	cnf *config.Config
 }
 
 func New(out io.Writer, name string, cnf *config.Config) *Export {
 	fs := flagset.New(name)
 
-	c := Export{
-		out: out,
-		cnf: cnf,
-		fs:  fs,
-	}
+	act := export.New(out, export.NewConfig(cnf))
 
-	return &c
+	return &Export{
+		fs:  fs,
+		act: act,
+		cnf: cnf,
+	}
 }
 
 func (c *Export) AsClic(subs ...*clic.Clic) *clic.Clic {
-	cmd := clic.New(c, subs...)
-	cmd.Meta[clic.MetaKeyCmdDesc] = "Print code for a shell to evaluate"
+	cc := clic.New(cmd.NewHelpWrap(c.cnf, c), subs...)
+	cc.Meta[clic.MetaKeyCmdDesc] = "Print code for a shell to evaluate"
 
-	return cmd
+	return cc
 }
 
 func (c *Export) FlagSet() *flagset.FlagSet {
@@ -41,12 +41,5 @@ func (c *Export) FlagSet() *flagset.FlagSet {
 }
 
 func (c *Export) HandleCommand(ctx context.Context) error {
-	if c.cnf.Help {
-		return ccmd.NewUsageError(ccmd.ErrHelpFlag)
-	}
-
-	aliases := c.cnf.CmdSounds.CmdList()
-	d := makeAliasesData(c.cnf.NotFoundKey, c.cnf.NotFoundSound, aliases)
-
-	return fprintAliases(c.out, d)
+	return c.act.Run(ctx)
 }
