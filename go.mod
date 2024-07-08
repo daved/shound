@@ -3,13 +3,11 @@ module github.com/daved/shound
 go 1.21.9
 
 require (
-	github.com/daved/clic v0.0.0-20240706054802-2c23548f4bbb
+	github.com/daved/clic v0.0.0-20240708093731-5bbfc2103612
 	github.com/daved/flagset v0.0.0-20240706053228-ea0473f4a173
 	github.com/go-git/go-git/v5 v5.12.0
 	gopkg.in/yaml.v3 v3.0.1
 )
-
-replace github.com/daved/clic => ../clic
 
 require (
 	dario.cat/mergo v1.0.0 // indirect
