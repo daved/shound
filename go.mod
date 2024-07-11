@@ -6,6 +6,7 @@ require (
 	github.com/daved/clic v0.0.0-20240708093731-5bbfc2103612
 	github.com/daved/flagset v0.0.0-20240706053228-ea0473f4a173
 	github.com/go-git/go-git/v5 v5.12.0
+	github.com/otiai10/copy v1.14.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -28,6 +29,7 @@ require (
 	golang.org/x/crypto v0.21.0 // indirect
 	golang.org/x/mod v0.12.0 // indirect
 	golang.org/x/net v0.22.0 // indirect
+	golang.org/x/sync v0.3.0 // indirect
 	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/tools v0.13.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect

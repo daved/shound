@@ -12,11 +12,16 @@ import (
 	"github.com/daved/shound/cmd/shound/internal/cmds/theme/list"
 	"github.com/daved/shound/cmd/shound/internal/cmds/theme/set"
 	"github.com/daved/shound/cmd/shound/internal/cmds/theme/uninstall"
+	"github.com/daved/shound/cmd/shound/internal/cmds/theme/validate"
 	"github.com/daved/shound/internal/config"
 )
 
-func newCommand(appName string, out io.Writer, cnf *config.Config, ti *themesInfo,
-) (*clic.Clic, error) {
+type (
+	conf       = config.Config
+	themesInfo = ThemesInfo
+)
+
+func newCommand(appName string, out io.Writer, cnf *conf, ti *themesInfo) (*clic.Clic, error) {
 	cmd := root.New(appName, cnf).AsClic(
 		export.New(out, "export", cnf).AsClic(),
 		identify.New(out, "identify", cnf).AsClic(),
@@ -25,7 +30,7 @@ func newCommand(appName string, out io.Writer, cnf *config.Config, ti *themesInf
 			set.New(out, "set", cnf, ti).AsClic(),
 			list.New(out, "list", cnf, ti).AsClic(),
 			uninstall.New(out, "uninstall", cnf, ti).AsClic(),
-			// TODO: add validate subcmd
+			validate.New(out, "validate", cnf, ti).AsClic(),
 		),
 	)
 

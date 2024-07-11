@@ -46,6 +46,7 @@ func (c *Install) FlagSet() *flagset.FlagSet {
 
 func (c *Install) HandleCommand(ctx context.Context) error {
 	themeRepo := c.fs.Arg(0)
+	themeHash := c.fs.Arg(1)
 
-	return c.act.Run(ctx, themeRepo)
+	return c.act.Run(ctx, themeRepo, themeHash)
 }

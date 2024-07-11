@@ -12,7 +12,7 @@ import (
 
 type ThemeAdder interface {
 	IsThemeInstalled(string) (bool, error)
-	AddTheme(string) error
+	AddTheme(theme, hash string) error
 }
 
 type Config struct {
@@ -39,7 +39,7 @@ func New(out io.Writer, cnf *Config, ta ThemeAdder) *Install {
 	}
 }
 
-func (a *Install) Run(ctx context.Context, themeRepo string) error {
+func (a *Install) Run(ctx context.Context, themeRepo, hash string) error {
 	eMsg := "theme: install: %w"
 
 	if themeRepo == "" {
@@ -58,7 +58,7 @@ func (a *Install) Run(ctx context.Context, themeRepo string) error {
 	// TODO: if version different, checkout correct version
 
 	// TODO: handle versions on initial clone
-	if err := a.ta.AddTheme(themeRepo); err != nil {
+	if err := a.ta.AddTheme(themeRepo, hash); err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
 

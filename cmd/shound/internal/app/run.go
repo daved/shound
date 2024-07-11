@@ -37,7 +37,7 @@ func Run(appName string, out io.Writer, args []string) error {
 		return err
 	}
 
-	ti := newThemesInfo(out, cnf, themeFileName)
+	ti := NewThemesInfo(appName, out, cnf, themeFileName)
 
 	cc, err := newCommand(appName, out, cnf, ti)
 	if err != nil {
