@@ -13,12 +13,13 @@ import (
 	"github.com/daved/shound/cmd/shound/internal/cmds/theme/set"
 	"github.com/daved/shound/cmd/shound/internal/cmds/theme/uninstall"
 	"github.com/daved/shound/cmd/shound/internal/cmds/theme/validate"
+	"github.com/daved/shound/cmd/shound/internal/themesinfo"
 	"github.com/daved/shound/internal/config"
 )
 
 type (
 	conf       = config.Config
-	themesInfo = ThemesInfo
+	themesInfo = themesinfo.ThemesInfo
 )
 
 func newCommand(appName string, out io.Writer, cnf *conf, ti *themesInfo) (*clic.Clic, error) {

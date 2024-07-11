@@ -1,4 +1,4 @@
-package app
+package themesinfo
 
 import (
 	"errors"
@@ -29,7 +29,7 @@ type ThemesInfo struct {
 	themeFileName string
 }
 
-func NewThemesInfo(appName string, out io.Writer, cnf *config.Config, fileName string) *ThemesInfo {
+func New(appName string, out io.Writer, cnf *config.Config, fileName string) *ThemesInfo {
 	return &ThemesInfo{
 		appName:       appName,
 		out:           out,

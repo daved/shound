@@ -10,6 +10,7 @@ import (
 
 	"github.com/daved/clic"
 	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
+	"github.com/daved/shound/cmd/shound/internal/themesinfo"
 )
 
 func Run(appName string, out io.Writer, args []string) error {
@@ -37,7 +38,7 @@ func Run(appName string, out io.Writer, args []string) error {
 		return err
 	}
 
-	ti := NewThemesInfo(appName, out, cnf, themeFileName)
+	ti := themesinfo.New(appName, out, cnf, themeFileName)
 
 	cc, err := newCommand(appName, out, cnf, ti)
 	if err != nil {
