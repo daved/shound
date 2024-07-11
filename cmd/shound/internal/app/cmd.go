@@ -13,25 +13,25 @@ import (
 	"github.com/daved/shound/cmd/shound/internal/cmds/theme/set"
 	"github.com/daved/shound/cmd/shound/internal/cmds/theme/uninstall"
 	"github.com/daved/shound/cmd/shound/internal/cmds/theme/validate"
-	"github.com/daved/shound/cmd/shound/internal/themesinfo"
+	"github.com/daved/shound/cmd/shound/internal/themesmgr"
 	"github.com/daved/shound/internal/config"
 )
 
 type (
-	conf       = config.Config
-	themesInfo = themesinfo.ThemesInfo
+	conf      = config.Config
+	themesMgr = themesmgr.ThemesMgr
 )
 
-func newCommand(appName string, out io.Writer, cnf *conf, ti *themesInfo) (*clic.Clic, error) {
+func newCommand(appName string, out io.Writer, cnf *conf, tm *themesMgr) (*clic.Clic, error) {
 	cmd := root.New(appName, cnf).AsClic(
 		export.New(out, "export", cnf).AsClic(),
 		identify.New(out, "identify", cnf).AsClic(),
 		theme.New(out, "theme", cnf).AsClic(
-			install.New(out, "install", cnf, ti).AsClic(),
-			set.New(out, "set", cnf, ti).AsClic(),
-			list.New(out, "list", cnf, ti).AsClic(),
-			uninstall.New(out, "uninstall", cnf, ti).AsClic(),
-			validate.New(out, "validate", cnf, ti).AsClic(),
+			install.New(out, "install", cnf, tm).AsClic(),
+			set.New(out, "set", cnf, tm).AsClic(),
+			list.New(out, "list", cnf, tm).AsClic(),
+			uninstall.New(out, "uninstall", cnf, tm).AsClic(),
+			validate.New(out, "validate", cnf, tm).AsClic(),
 		),
 	)
 

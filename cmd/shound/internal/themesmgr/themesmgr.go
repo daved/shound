@@ -1,4 +1,4 @@
-package themesinfo
+package themesmgr
 
 import (
 	"errors"
@@ -20,7 +20,7 @@ var (
 	tmpDirPrefix = "themes"
 )
 
-type ThemesInfo struct {
+type ThemesMgr struct {
 	appName       string
 	out           io.Writer
 	cnf           *config.Config
@@ -29,8 +29,8 @@ type ThemesInfo struct {
 	themeFileName string
 }
 
-func New(appName string, out io.Writer, cnf *config.Config, fileName string) *ThemesInfo {
-	return &ThemesInfo{
+func New(appName string, out io.Writer, cnf *config.Config, fileName string) *ThemesMgr {
+	return &ThemesMgr{
 		appName:       appName,
 		out:           out,
 		cnf:           cnf,
@@ -40,16 +40,16 @@ func New(appName string, out io.Writer, cnf *config.Config, fileName string) *Th
 	}
 }
 
-func (i *ThemesInfo) Themes() ([]string, error) {
+func (i *ThemesMgr) Themes() ([]string, error) {
 	themes, err := i.themes()
 	if err != nil {
-		return nil, fmt.Errorf("themes info: %w", err)
+		return nil, fmt.Errorf("themes manager: %w", err)
 	}
 
 	return themes, nil
 }
 
-func (i *ThemesInfo) themes() ([]string, error) {
+func (i *ThemesMgr) themes() ([]string, error) {
 	var ts []string
 
 	err := filepath.WalkDir(i.themesDir, func(path string, de fs.DirEntry, err error) error {
@@ -69,8 +69,8 @@ func (i *ThemesInfo) themes() ([]string, error) {
 	return ts, nil
 }
 
-func (i *ThemesInfo) SetTheme(theme string) error {
-	eMsg := "themes info: set theme: %w"
+func (i *ThemesMgr) SetTheme(theme string) error {
+	eMsg := "themes manager: set theme: %w"
 
 	cnfBytes, err := os.ReadFile(i.cnf.User.Flags.ConfFilePath)
 	if err != nil {
@@ -93,15 +93,15 @@ func (i *ThemesInfo) SetTheme(theme string) error {
 	return nil
 }
 
-func (i *ThemesInfo) stagingDirPath(theme string) string {
+func (i *ThemesMgr) stagingDirPath(theme string) string {
 	return filepath.Join(os.TempDir(), i.appName, i.tmpDirPrefix, theme)
 }
 
-func (i *ThemesInfo) loadingDirPath(theme string) string {
+func (i *ThemesMgr) loadingDirPath(theme string) string {
 	return filepath.Join(i.themesDir, theme)
 }
 
-func (i *ThemesInfo) prepareDir(path string) error {
+func (i *ThemesMgr) prepareDir(path string) error {
 	if err := os.MkdirAll(path, 0755); err != nil {
 		return fmt.Errorf("prepare staging dir: %w", err)
 	}
@@ -109,16 +109,16 @@ func (i *ThemesInfo) prepareDir(path string) error {
 	return nil
 }
 
-func (i *ThemesInfo) ValidateThemeRemote(theme, hash string) error {
+func (i *ThemesMgr) ValidateThemeRemote(theme, hash string) error {
 	stagingDirPath := i.stagingDirPath(theme)
 	if err := i.validateThemeRemote(stagingDirPath, theme, hash); err != nil {
-		return fmt.Errorf("themes info: %w", err)
+		return fmt.Errorf("themes manager: %w", err)
 	}
 
 	return nil
 }
 
-func (i *ThemesInfo) validateThemeRemote(tmpPath, theme, hash string) error {
+func (i *ThemesMgr) validateThemeRemote(tmpPath, theme, hash string) error {
 	eMsg := "validate theme (remote): %w"
 
 	if err := i.downloadTheme(tmpPath, theme); err != nil {
@@ -138,15 +138,15 @@ func (i *ThemesInfo) validateThemeRemote(tmpPath, theme, hash string) error {
 	return nil
 }
 
-func (i *ThemesInfo) ValidateThemeDir(dir string) error {
+func (i *ThemesMgr) ValidateThemeDir(dir string) error {
 	if err := i.validateThemeDir(dir); err != nil {
-		return fmt.Errorf("themes info: %w", err)
+		return fmt.Errorf("themes manager: %w", err)
 	}
 
 	return nil
 }
 
-func (i *ThemesInfo) validateThemeDir(dir string) error {
+func (i *ThemesMgr) validateThemeDir(dir string) error {
 	// TODO: validateThemeDir()
 	// ensure themeconfig file loads
 
@@ -157,7 +157,7 @@ func (i *ThemesInfo) validateThemeDir(dir string) error {
 	return nil
 }
 
-func (i *ThemesInfo) downloadTheme(dir, theme string) error {
+func (i *ThemesMgr) downloadTheme(dir, theme string) error {
 	eMsg := "download theme: %w"
 
 	if err := i.prepareDir(dir); err != nil {
@@ -207,7 +207,7 @@ func treeCheckout(t *git.Worktree, hash string) error {
 	return nil
 }
 
-func (i *ThemesInfo) checkoutInDir(dir, hash string) error {
+func (i *ThemesMgr) checkoutInDir(dir, hash string) error {
 	eMsg := "checkout in dir: %w"
 
 	repo, err := git.PlainOpen(dir)
@@ -227,7 +227,7 @@ func (i *ThemesInfo) checkoutInDir(dir, hash string) error {
 	return nil
 }
 
-func (i *ThemesInfo) copyTheme(src, dst string) error {
+func (i *ThemesMgr) copyTheme(src, dst string) error {
 	eMsg := "copy theme: %w"
 
 	if err := i.prepareDir(dst); err != nil {
@@ -241,9 +241,9 @@ func (i *ThemesInfo) copyTheme(src, dst string) error {
 	return nil
 }
 
-func (i *ThemesInfo) AddTheme(theme, hash string) error {
+func (i *ThemesMgr) AddTheme(theme, hash string) error {
 	// use stage theme and load theme here
-	eMsg := "themes info: add theme: %w"
+	eMsg := "themes manager: add theme: %w"
 
 	stagingDirPath := i.stagingDirPath(theme)
 	if err := i.validateThemeRemote(stagingDirPath, theme, hash); err != nil {
@@ -262,16 +262,16 @@ func (i *ThemesInfo) AddTheme(theme, hash string) error {
 	return nil
 }
 
-func (i *ThemesInfo) DeleteTheme(theme string) error {
+func (i *ThemesMgr) DeleteTheme(theme string) error {
 	loadingDirPath := i.loadingDirPath(theme)
 	if err := i.deleteDir(loadingDirPath); err != nil {
-		return fmt.Errorf("themes info: delete theme: %w", err)
+		return fmt.Errorf("themes manager: delete theme: %w", err)
 	}
 
 	return nil
 }
 
-func (i *ThemesInfo) deleteDir(dir string) error {
+func (i *ThemesMgr) deleteDir(dir string) error {
 	if err := os.RemoveAll(dir); err != nil {
 		return fmt.Errorf("delete dir: %w", err)
 	}
@@ -279,17 +279,17 @@ func (i *ThemesInfo) deleteDir(dir string) error {
 	return nil
 }
 
-func (i *ThemesInfo) IsThemeInstalled(theme string) (bool, error) {
+func (i *ThemesMgr) IsThemeInstalled(theme string) (bool, error) {
 	dir := i.loadingDirPath(theme)
 	isInstalled, err := i.isThemeInstalled(dir, theme)
 	if err != nil {
-		return isInstalled, fmt.Errorf("themes info: %w", err)
+		return isInstalled, fmt.Errorf("themes manager: %w", err)
 	}
 
 	return isInstalled, nil
 }
 
-func (i *ThemesInfo) isThemeInstalled(dir, theme string) (bool, error) {
+func (i *ThemesMgr) isThemeInstalled(dir, theme string) (bool, error) {
 	eMsg := "is theme installed: %w"
 	themes, err := i.themes()
 	if err != nil {
