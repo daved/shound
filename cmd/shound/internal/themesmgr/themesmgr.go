@@ -147,12 +147,29 @@ func (i *ThemesMgr) ValidateThemeDir(dir string) error {
 }
 
 func (i *ThemesMgr) validateThemeDir(dir string) error {
-	// TODO: validateThemeDir()
-	// ensure themeconfig file loads
+	eMsg := "validate theme directory: %w"
 
-	// check basic values
+	cnfFilePath := filepath.Join(dir, i.themeFileName)
+	cnfBytes, err := os.ReadFile(cnfFilePath)
+	if err != nil {
+		return fmt.Errorf(eMsg, err)
+	}
 
-	// iterate over expected audio files and verify existence
+	cnf := &config.ThemeFile{}
+	if err := cnf.InitFromYAML(cnfBytes); err != nil {
+		return fmt.Errorf(eMsg, err)
+	}
+
+	if len(cnf.CmdSounds) == 0 {
+		return fmt.Errorf(eMsg, errors.New("theme file is missing CmdSounds entry"))
+	}
+
+	for cmd, snd := range cnf.CmdSounds {
+		sndFilePath := filepath.Join(dir, snd)
+		if _, err := os.Stat(sndFilePath); err != nil {
+			return fmt.Errorf(eMsg, fmt.Errorf("verify CmdSounds: %s: %w", cmd, err))
+		}
+	}
 
 	return nil
 }

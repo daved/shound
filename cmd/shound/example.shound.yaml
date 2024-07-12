@@ -1,0 +1,4 @@
+# Audio files must exist relative to the directory containing this theme file.
+CmdSounds:
+  ls: "beep.flac"
+  cd: "boop.flac"
