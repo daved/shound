@@ -4,13 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/fs"
 	"os"
 	"path/filepath"
 	"slices"
 	"strings"
 
 	"github.com/daved/shound/internal/config"
+	"github.com/daved/shound/internal/fs"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	cp "github.com/otiai10/copy"
@@ -20,23 +20,27 @@ var (
 	tmpDirPrefix = "themes"
 )
 
+type (
+	conf = config.Config
+)
+
 type ThemesMgr struct {
-	appName       string
+	fs            fs.FS
 	out           io.Writer
+	appName       string
+	themeFileName string
 	cnf           *config.Config
 	tmpDirPrefix  string
-	themesDir     string
-	themeFileName string
 }
 
-func New(appName string, out io.Writer, cnf *config.Config, fileName string) *ThemesMgr {
+func New(fs fs.FS, out io.Writer, appName, fileName string, cnf *conf) *ThemesMgr {
 	return &ThemesMgr{
-		appName:       appName,
+		fs:            fs,
 		out:           out,
+		appName:       appName,
+		themeFileName: fileName,
 		cnf:           cnf,
 		tmpDirPrefix:  tmpDirPrefix,
-		themesDir:     cnf.User.File.ThemesDir,
-		themeFileName: fileName,
 	}
 }
 
@@ -52,10 +56,12 @@ func (i *ThemesMgr) Themes() ([]string, error) {
 func (i *ThemesMgr) themes() ([]string, error) {
 	var ts []string
 
-	err := filepath.WalkDir(i.themesDir, func(path string, de fs.DirEntry, err error) error {
+	themesDir := i.cnf.ThemesDir
+
+	err := filepath.WalkDir(themesDir, func(path string, de fs.DirEntry, err error) error {
 		if filepath.Base(path) == i.themeFileName {
 			dir := filepath.Dir(path)
-			relToThemesdir := dir[len(i.themesDir):]
+			relToThemesdir := dir[len(themesDir):]
 			noSeps := strings.Trim(relToThemesdir, string(os.PathSeparator))
 			ts = append(ts, noSeps)
 		}
@@ -72,7 +78,7 @@ func (i *ThemesMgr) themes() ([]string, error) {
 func (i *ThemesMgr) SetTheme(theme string) error {
 	eMsg := "themes manager: set theme: %w"
 
-	cnfBytes, err := os.ReadFile(i.cnf.User.Flags.ConfFilePath)
+	cnfBytes, err := i.fs.ReadFile(i.cnf.User.Flags.ConfFilePath)
 	if err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
@@ -82,7 +88,7 @@ func (i *ThemesMgr) SetTheme(theme string) error {
 		return fmt.Errorf(eMsg, err)
 	}
 
-	if err := os.WriteFile(i.cnf.User.Flags.ConfFilePath, updCnfBytes, 0600); err != nil {
+	if err := i.fs.WriteFile(i.cnf.User.Flags.ConfFilePath, updCnfBytes, 0600); err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
 
@@ -98,11 +104,11 @@ func (i *ThemesMgr) stagingDirPath(theme string) string {
 }
 
 func (i *ThemesMgr) loadingDirPath(theme string) string {
-	return filepath.Join(i.themesDir, theme)
+	return filepath.Join(i.cnf.ThemesDir, theme)
 }
 
 func (i *ThemesMgr) prepareDir(path string) error {
-	if err := os.MkdirAll(path, 0755); err != nil {
+	if err := i.fs.MkdirAll(path, 0755); err != nil {
 		return fmt.Errorf("prepare staging dir: %w", err)
 	}
 
@@ -150,7 +156,7 @@ func (i *ThemesMgr) validateThemeDir(dir string) error {
 	eMsg := "validate theme directory: %w"
 
 	cnfFilePath := filepath.Join(dir, i.themeFileName)
-	cnfBytes, err := os.ReadFile(cnfFilePath)
+	cnfBytes, err := i.fs.ReadFile(cnfFilePath)
 	if err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
@@ -166,7 +172,7 @@ func (i *ThemesMgr) validateThemeDir(dir string) error {
 
 	for cmd, snd := range cnf.CmdSounds {
 		sndFilePath := filepath.Join(dir, snd)
-		if _, err := os.Stat(sndFilePath); err != nil {
+		if _, err := i.fs.Stat(sndFilePath); err != nil {
 			return fmt.Errorf(eMsg, fmt.Errorf("verify CmdSounds: %s: %w", cmd, err))
 		}
 	}
@@ -289,7 +295,7 @@ func (i *ThemesMgr) DeleteTheme(theme string) error {
 }
 
 func (i *ThemesMgr) deleteDir(dir string) error {
-	if err := os.RemoveAll(dir); err != nil {
+	if err := i.fs.RemoveAll(dir); err != nil {
 		return fmt.Errorf("delete dir: %w", err)
 	}
 

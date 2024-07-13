@@ -2,12 +2,13 @@ package app
 
 import (
 	"fmt"
-	"os"
+
+	"github.com/daved/shound/internal/fs"
 )
 
-func fsEnsureDirsExist(paths ...string) error {
+func ensureDirsExist(fs fs.FS, paths ...string) error {
 	for _, path := range paths {
-		if err := os.MkdirAll(path, 0o077); err != nil {
+		if err := fs.MkdirAll(path, 0o077); err != nil {
 			return fmt.Errorf("file sys: ensure dirs exist: %s", path)
 		}
 	}

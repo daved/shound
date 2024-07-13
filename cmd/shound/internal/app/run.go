@@ -11,6 +11,7 @@ import (
 	"github.com/daved/clic"
 	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
 	"github.com/daved/shound/cmd/shound/internal/themesmgr"
+	"github.com/daved/shound/internal/fs"
 )
 
 func Run(appName string, out io.Writer, args []string) error {
@@ -28,17 +29,18 @@ func Run(appName string, out io.Writer, args []string) error {
 	)
 
 	// TODO: support windows (config and cache dirs)
+	fs := fs.NewOpFS()
 
-	if err = fsEnsureDirsExist(defConfigDirPath, defThemesDirPath); err != nil {
+	if err = ensureDirsExist(fs, defConfigDirPath, defThemesDirPath); err != nil {
 		return err
 	}
 
-	cnf, err := newConfig(defConfigPath, defThemesDirPath, themeFileName)
+	cnf, err := newConfig(fs, defConfigPath, defThemesDirPath, themeFileName)
 	if err != nil {
 		return err
 	}
 
-	tm := themesmgr.New(appName, out, cnf, themeFileName)
+	tm := themesmgr.New(fs, out, appName, themeFileName, cnf)
 
 	cc, err := newCommand(appName, out, cnf, tm)
 	if err != nil {

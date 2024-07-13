@@ -2,18 +2,18 @@ package app
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 
 	"github.com/daved/shound/internal/config"
+	"github.com/daved/shound/internal/fs"
 )
 
-func newConfig(defConfPath, defThemesDirPath, themeFileName string) (*config.Config, error) {
+func newConfig(fs fs.FS, defConfPath, defThemesDirPath, themeFileName string) (*config.Config, error) {
 	eMsg := "new config: %w"
 
 	cnf := config.New(defConfPath, defThemesDirPath)
 
-	cnfBytes, err := os.ReadFile(cnf.User.Flags.ConfFilePath)
+	cnfBytes, err := fs.ReadFile(cnf.User.Flags.ConfFilePath)
 	if err != nil {
 		return nil, fmt.Errorf(eMsg, err)
 	}
@@ -24,7 +24,7 @@ func newConfig(defConfPath, defThemesDirPath, themeFileName string) (*config.Con
 
 	themePath := filepath.Join(cnf.User.File.ThemesDir, cnf.User.File.ThemeRepo, themeFileName)
 
-	themeCnfBytes, err := os.ReadFile(themePath)
+	themeCnfBytes, err := fs.ReadFile(themePath)
 	if err != nil {
 		return nil, fmt.Errorf(eMsg, err)
 	}
