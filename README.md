@@ -22,7 +22,7 @@ type shound &>/dev/null && eval "$(shound export)"
 
 ```
 shound -h       # shows all top-level subcommands
-shound theme -h # shows subcommands for the theme top-level subcommand
+shound -h theme # shows subcommands for the theme top-level subcommand
 ```
 
 ```
