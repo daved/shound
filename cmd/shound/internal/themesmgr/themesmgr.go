@@ -9,16 +9,14 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/daved/shound/cmd/shound/internal/fs"
 	"github.com/daved/shound/internal/config"
-	"github.com/daved/shound/internal/fs"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	cp "github.com/otiai10/copy"
 )
 
-var (
-	tmpDirPrefix = "themes"
-)
+var tmpDirPrefix = "themes"
 
 type (
 	conf = config.Config

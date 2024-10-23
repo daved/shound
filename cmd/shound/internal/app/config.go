@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/daved/shound/cmd/shound/internal/fs"
 	"github.com/daved/shound/internal/config"
-	"github.com/daved/shound/internal/fs"
 )
 
 func newConfig(fs fs.FS, defConfPath, defThemesDirPath, themeFileName string) (*config.Config, error) {

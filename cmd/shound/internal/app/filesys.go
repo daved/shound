@@ -3,7 +3,7 @@ package app
 import (
 	"fmt"
 
-	"github.com/daved/shound/internal/fs"
+	"github.com/daved/shound/cmd/shound/internal/fs"
 )
 
 func ensureDirsExist(fs fs.FS, paths ...string) error {

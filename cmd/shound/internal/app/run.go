@@ -10,8 +10,8 @@ import (
 
 	"github.com/daved/clic"
 	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
+	"github.com/daved/shound/cmd/shound/internal/fs"
 	"github.com/daved/shound/cmd/shound/internal/themesmgr"
-	"github.com/daved/shound/internal/fs"
 )
 
 func Run(appName string, out io.Writer, args []string) error {
