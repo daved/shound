@@ -13,8 +13,8 @@ import (
 	"github.com/daved/shound/cmd/shound/internal/cmds/theme/set"
 	"github.com/daved/shound/cmd/shound/internal/cmds/theme/uninstall"
 	"github.com/daved/shound/cmd/shound/internal/cmds/theme/validate"
+	"github.com/daved/shound/cmd/shound/internal/config"
 	"github.com/daved/shound/cmd/shound/internal/themesmgr"
-	"github.com/daved/shound/internal/config"
 )
 
 type (

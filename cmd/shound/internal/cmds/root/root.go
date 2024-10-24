@@ -7,7 +7,7 @@ import (
 	"github.com/daved/clic"
 	"github.com/daved/flagset"
 	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
-	"github.com/daved/shound/internal/config"
+	"github.com/daved/shound/cmd/shound/internal/config"
 )
 
 type Root struct {
@@ -30,7 +30,7 @@ func New(name string, cnf *config.Config) *Root {
 }
 
 func (c *Root) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.cnf, c)
+	h := cmd.NewHelpWrap(c.cnf.Resolved, c)
 
 	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeySubRequired] = true

@@ -7,8 +7,8 @@ import (
 	"github.com/daved/clic"
 	"github.com/daved/flagset"
 	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
+	"github.com/daved/shound/cmd/shound/internal/config"
 	"github.com/daved/shound/internal/actions/theme/uninstall"
-	"github.com/daved/shound/internal/config"
 )
 
 type Uninstall struct {
@@ -20,7 +20,7 @@ type Uninstall struct {
 func New(out io.Writer, name string, cnf *config.Config, td uninstall.ThemeDeleter) *Uninstall {
 	fs := flagset.New(name)
 
-	act := uninstall.New(out, uninstall.NewConfig(cnf), td)
+	act := uninstall.New(out, uninstall.NewConfig(cnf.Resolved), td)
 
 	return &Uninstall{
 		fs:  fs,
@@ -30,7 +30,7 @@ func New(out io.Writer, name string, cnf *config.Config, td uninstall.ThemeDelet
 }
 
 func (c *Uninstall) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.cnf, c)
+	h := cmd.NewHelpWrap(c.cnf.Resolved, c)
 
 	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeyCmdDesc] = "Uninstall a theme"

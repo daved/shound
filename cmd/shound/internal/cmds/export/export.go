@@ -7,8 +7,8 @@ import (
 	"github.com/daved/clic"
 	"github.com/daved/flagset"
 	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
+	"github.com/daved/shound/cmd/shound/internal/config"
 	"github.com/daved/shound/internal/actions/export"
-	"github.com/daved/shound/internal/config"
 )
 
 type Export struct {
@@ -20,7 +20,7 @@ type Export struct {
 func New(out io.Writer, name string, cnf *config.Config) *Export {
 	fs := flagset.New(name)
 
-	act := export.New(out, export.NewConfig(cnf))
+	act := export.New(out, export.NewConfig(cnf.Resolved))
 
 	return &Export{
 		fs:  fs,
@@ -30,7 +30,7 @@ func New(out io.Writer, name string, cnf *config.Config) *Export {
 }
 
 func (c *Export) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.cnf, c)
+	h := cmd.NewHelpWrap(c.cnf.Resolved, c)
 
 	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeyCmdDesc] = "Print code for a shell to evaluate"

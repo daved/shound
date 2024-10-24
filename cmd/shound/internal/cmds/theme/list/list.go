@@ -7,8 +7,8 @@ import (
 	"github.com/daved/clic"
 	"github.com/daved/flagset"
 	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
+	"github.com/daved/shound/cmd/shound/internal/config"
 	"github.com/daved/shound/internal/actions/theme/list"
-	"github.com/daved/shound/internal/config"
 )
 
 type List struct {
@@ -20,7 +20,7 @@ type List struct {
 func New(out io.Writer, name string, cnf *config.Config, tp list.ThemesProvider) *List {
 	fs := flagset.New(name)
 
-	act := list.New(out, list.NewConfig(cnf), tp)
+	act := list.New(out, list.NewConfig(cnf.Resolved), tp)
 
 	return &List{
 		fs:  fs,
@@ -30,7 +30,7 @@ func New(out io.Writer, name string, cnf *config.Config, tp list.ThemesProvider)
 }
 
 func (c *List) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.cnf, c)
+	h := cmd.NewHelpWrap(c.cnf.Resolved, c)
 
 	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeyCmdDesc] = "List installed themes"

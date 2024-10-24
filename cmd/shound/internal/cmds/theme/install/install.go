@@ -7,8 +7,8 @@ import (
 	"github.com/daved/clic"
 	"github.com/daved/flagset"
 	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
+	"github.com/daved/shound/cmd/shound/internal/config"
 	"github.com/daved/shound/internal/actions/theme/install"
-	"github.com/daved/shound/internal/config"
 )
 
 type Install struct {
@@ -20,7 +20,7 @@ type Install struct {
 func New(out io.Writer, name string, cnf *config.Config, ta install.ThemeAdder) *Install {
 	fs := flagset.New(name)
 
-	act := install.New(out, install.NewConfig(cnf), ta)
+	act := install.New(out, install.NewConfig(cnf.Resolved), ta)
 
 	return &Install{
 		fs:  fs,
@@ -30,7 +30,7 @@ func New(out io.Writer, name string, cnf *config.Config, ta install.ThemeAdder) 
 }
 
 func (c *Install) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.cnf, c)
+	h := cmd.NewHelpWrap(c.cnf.Resolved, c)
 
 	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeyCmdDesc] = "Install a theme"

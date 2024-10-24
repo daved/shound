@@ -9,18 +9,14 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/daved/shound/cmd/shound/internal/config"
 	"github.com/daved/shound/cmd/shound/internal/fs"
-	"github.com/daved/shound/internal/config"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	cp "github.com/otiai10/copy"
 )
 
 var tmpDirPrefix = "themes"
-
-type (
-	conf = config.Config
-)
 
 type ThemesMgr struct {
 	fs            fs.FS
@@ -31,7 +27,7 @@ type ThemesMgr struct {
 	tmpDirPrefix  string
 }
 
-func New(fs fs.FS, out io.Writer, appName, fileName string, cnf *conf) *ThemesMgr {
+func New(fs fs.FS, out io.Writer, appName, fileName string, cnf *config.Config) *ThemesMgr {
 	return &ThemesMgr{
 		fs:            fs,
 		out:           out,
@@ -54,7 +50,7 @@ func (m *ThemesMgr) Themes() ([]string, error) {
 func (m *ThemesMgr) themes() ([]string, error) {
 	var ts []string
 
-	themesDir := m.cnf.ThemesDir
+	themesDir := m.cnf.Resolved.ThemesDir
 
 	err := filepath.WalkDir(themesDir, func(path string, de fs.DirEntry, err error) error {
 		if filepath.Base(path) == m.themeFileName {
@@ -76,7 +72,7 @@ func (m *ThemesMgr) themes() ([]string, error) {
 func (m *ThemesMgr) SetTheme(theme string) error {
 	eMsg := "themes manager: set theme: %w"
 
-	cnfBytes, err := m.fs.ReadFile(m.cnf.User.Flags.ConfFilePath)
+	cnfBytes, err := m.fs.ReadFile(m.cnf.Resolved.ConfFilePath)
 	if err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
@@ -86,11 +82,12 @@ func (m *ThemesMgr) SetTheme(theme string) error {
 		return fmt.Errorf(eMsg, err)
 	}
 
-	if err := m.fs.WriteFile(m.cnf.User.Flags.ConfFilePath, updCnfBytes, 0600); err != nil {
+	cnf := &config.File{}
+	if err := cnf.InitFromYAML(updCnfBytes); err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
 
-	if err := m.cnf.User.File.InitFromYAML(cnfBytes); err != nil {
+	if err := m.fs.WriteFile(m.cnf.Resolved.ConfFilePath, updCnfBytes, 0600); err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
 
@@ -102,7 +99,7 @@ func (m *ThemesMgr) stagingDirPath(theme string) string {
 }
 
 func (m *ThemesMgr) loadingDirPath(theme string) string {
-	return filepath.Join(m.cnf.ThemesDir, theme)
+	return filepath.Join(m.cnf.Resolved.ThemesDir, theme)
 }
 
 func (m *ThemesMgr) prepareDir(path string) error {
