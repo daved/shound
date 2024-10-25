@@ -12,10 +12,10 @@ import (
 
 type Root struct {
 	fs  *flagset.FlagSet
-	cnf *config.Config
+	cnf *config.Sourced
 }
 
-func New(name string, cnf *config.Config) *Root {
+func New(name string, cnf *config.Sourced) *Root {
 	fs := flagset.New(name)
 
 	c := Root{
@@ -23,14 +23,14 @@ func New(name string, cnf *config.Config) *Root {
 		cnf: cnf,
 	}
 
-	fs.Opt(&cnf.User.Flags.Help, "help|h", "Print help output.")
-	fs.Opt(&cnf.User.Flags.ConfFilePath, "conf", "Path to config file.")
+	fs.Opt(&cnf.Flags.Help, "help|h", "Print help output.")
+	fs.Opt(&cnf.Flags.ConfFilePath, "conf", "Path to config file.")
 
 	return &c
 }
 
 func (c *Root) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.cnf.Resolved, c)
+	h := cmd.NewHelpWrap(c.cnf.AResolved, c)
 
 	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeySubRequired] = true

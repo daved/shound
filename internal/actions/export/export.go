@@ -3,37 +3,29 @@ package export
 import (
 	"context"
 	"io"
-
-	"github.com/daved/shound/internal/config"
 )
 
-type Config struct {
-	global *config.Config
-}
-
-func NewConfig(global *config.Config) *Config {
-	return &Config{
-		global: global,
-	}
+type CmdSoundsReporter interface {
+	CmdList() []string
+	NotFoundKey() string
+	NotFoundSound() string
 }
 
 type Export struct {
 	out io.Writer
-	cnf *Config
+	csr CmdSoundsReporter
 }
 
-func New(out io.Writer, cnf *Config) *Export {
+func New(out io.Writer, csr CmdSoundsReporter) *Export {
 	return &Export{
 		out: out,
-		cnf: cnf,
+		csr: csr,
 	}
 }
 
 func (a *Export) Run(ctx context.Context) error {
-	gCnf := a.cnf.global
-
-	aliases := gCnf.CmdSounds.CmdList()
-	d := makeAliasesData(gCnf.NotFoundKey, gCnf.NotFoundSound, aliases)
+	aliases := a.csr.CmdList()
+	d := makeAliasesData(a.csr.NotFoundKey(), a.csr.NotFoundSound(), aliases)
 
 	return fprintAliases(a.out, d)
 }

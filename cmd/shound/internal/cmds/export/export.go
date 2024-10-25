@@ -14,23 +14,23 @@ import (
 type Export struct {
 	fs  *flagset.FlagSet
 	act *export.Export
-	cnf *config.Config
+	hr  cmd.HelpReporter
 }
 
-func New(out io.Writer, name string, cnf *config.Config) *Export {
+func New(out io.Writer, name string, cnf *config.Sourced) *Export {
 	fs := flagset.New(name)
 
-	act := export.New(out, export.NewConfig(cnf.Resolved))
+	act := export.New(out, cnf.AResolved)
 
 	return &Export{
 		fs:  fs,
 		act: act,
-		cnf: cnf,
+		hr:  cnf.AResolved,
 	}
 }
 
 func (c *Export) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.cnf.Resolved, c)
+	h := cmd.NewHelpWrap(c.hr, c)
 
 	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeyCmdDesc] = "Print code for a shell to evaluate"

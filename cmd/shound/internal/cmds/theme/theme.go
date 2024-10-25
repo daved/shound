@@ -14,10 +14,10 @@ import (
 type Theme struct {
 	fs  *flagset.FlagSet
 	act *theme.Theme
-	cnf *config.Config
+	cnf *config.Sourced
 }
 
-func New(out io.Writer, name string, cnf *config.Config) *Theme {
+func New(out io.Writer, name string, cnf *config.Sourced) *Theme {
 	fs := flagset.New(name)
 
 	act := theme.New(out, theme.NewConfig(cnf.Resolved))
@@ -32,7 +32,7 @@ func New(out io.Writer, name string, cnf *config.Config) *Theme {
 }
 
 func (c *Theme) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.cnf.Resolved, c)
+	h := cmd.NewHelpWrap(c.cnf.AResolved, c)
 
 	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeyCmdDesc] = "Show info about the current theme"

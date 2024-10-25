@@ -18,7 +18,7 @@ import (
 )
 
 type (
-	conf      = config.Config
+	conf      = config.Sourced
 	themesMgr = themesmgr.ThemesMgr
 )
 

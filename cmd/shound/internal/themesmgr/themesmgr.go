@@ -23,11 +23,11 @@ type ThemesMgr struct {
 	out           io.Writer
 	appName       string
 	themeFileName string
-	cnf           *config.Config
+	cnf           *config.Sourced
 	tmpDirPrefix  string
 }
 
-func New(fs fs.FS, out io.Writer, appName, fileName string, cnf *config.Config) *ThemesMgr {
+func New(fs fs.FS, out io.Writer, appName, fileName string, cnf *config.Sourced) *ThemesMgr {
 	return &ThemesMgr{
 		fs:            fs,
 		out:           out,

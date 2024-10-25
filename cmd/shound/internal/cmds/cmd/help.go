@@ -5,29 +5,32 @@ import (
 
 	"github.com/daved/clic"
 	"github.com/daved/flagset"
-	"github.com/daved/shound/internal/config"
 )
 
-type HelpWrap struct {
-	h   clic.Handler
-	cnf *config.Config
+type HelpReporter interface {
+	Help() bool
 }
 
-func NewHelpWrap(cnf *config.Config, h clic.Handler) *HelpWrap {
+type HelpWrap struct {
+	next clic.Handler
+	hr   HelpReporter
+}
+
+func NewHelpWrap(hr HelpReporter, next clic.Handler) *HelpWrap {
 	return &HelpWrap{
-		h:   h,
-		cnf: cnf,
+		next: next,
+		hr:   hr,
 	}
 }
 
 func (c *HelpWrap) FlagSet() *flagset.FlagSet {
-	return c.h.FlagSet()
+	return c.next.FlagSet()
 }
 
 func (c *HelpWrap) HandleCommand(ctx context.Context) error {
-	if c.cnf.Help {
+	if c.hr.Help() {
 		return NewUsageError(ErrHelpFlag)
 	}
 
-	return c.h.HandleCommand(ctx)
+	return c.next.HandleCommand(ctx)
 }

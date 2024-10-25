@@ -14,10 +14,10 @@ import (
 type Uninstall struct {
 	fs  *flagset.FlagSet
 	act *uninstall.Uninstall
-	cnf *config.Config
+	cnf *config.Sourced
 }
 
-func New(out io.Writer, name string, cnf *config.Config, td uninstall.ThemeDeleter) *Uninstall {
+func New(out io.Writer, name string, cnf *config.Sourced, td uninstall.ThemeDeleter) *Uninstall {
 	fs := flagset.New(name)
 
 	act := uninstall.New(out, uninstall.NewConfig(cnf.Resolved), td)
@@ -30,7 +30,7 @@ func New(out io.Writer, name string, cnf *config.Config, td uninstall.ThemeDelet
 }
 
 func (c *Uninstall) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.cnf.Resolved, c)
+	h := cmd.NewHelpWrap(c.cnf.AResolved, c)
 
 	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeyCmdDesc] = "Uninstall a theme"
