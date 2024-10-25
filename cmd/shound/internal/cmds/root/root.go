@@ -11,16 +11,16 @@ import (
 )
 
 type Root struct {
-	fs  *flagset.FlagSet
-	cnf *config.Sourced
+	fs *flagset.FlagSet
+	hr cmd.HelpReporter
 }
 
 func New(name string, cnf *config.Sourced) *Root {
 	fs := flagset.New(name)
 
 	c := Root{
-		fs:  fs,
-		cnf: cnf,
+		fs: fs,
+		hr: cnf.AResolved,
 	}
 
 	fs.Opt(&cnf.Flags.Help, "help|h", "Print help output.")
@@ -30,7 +30,7 @@ func New(name string, cnf *config.Sourced) *Root {
 }
 
 func (c *Root) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.cnf.AResolved, c)
+	h := cmd.NewHelpWrap(c.hr, c)
 
 	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeySubRequired] = true

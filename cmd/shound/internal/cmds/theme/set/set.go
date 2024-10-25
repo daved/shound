@@ -14,7 +14,7 @@ import (
 type Set struct {
 	fs  *flagset.FlagSet
 	act *set.Set
-	cnf *config.Sourced
+	hr  cmd.HelpReporter
 }
 
 func New(out io.Writer, name string, cnf *config.Sourced, ts set.ThemeSetter) *Set {
@@ -25,12 +25,12 @@ func New(out io.Writer, name string, cnf *config.Sourced, ts set.ThemeSetter) *S
 	return &Set{
 		fs:  fs,
 		act: act,
-		cnf: cnf,
+		hr:  cnf.AResolved,
 	}
 }
 
 func (c *Set) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.cnf.AResolved, c)
+	h := cmd.NewHelpWrap(c.hr, c)
 
 	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeyCmdDesc] = "Set the current theme"

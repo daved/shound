@@ -14,7 +14,7 @@ import (
 type Install struct {
 	fs  *flagset.FlagSet
 	act *install.Install
-	cnf *config.Sourced
+	hr  cmd.HelpReporter
 }
 
 func New(out io.Writer, name string, cnf *config.Sourced, ta install.ThemeAdder) *Install {
@@ -25,12 +25,12 @@ func New(out io.Writer, name string, cnf *config.Sourced, ta install.ThemeAdder)
 	return &Install{
 		fs:  fs,
 		act: act,
-		cnf: cnf,
+		hr:  cnf.AResolved,
 	}
 }
 
 func (c *Install) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.cnf.AResolved, c)
+	h := cmd.NewHelpWrap(c.hr, c)
 
 	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeyCmdDesc] = "Install a theme"

@@ -14,7 +14,7 @@ import (
 type List struct {
 	fs  *flagset.FlagSet
 	act *list.List
-	cnf *config.Sourced
+	hr  cmd.HelpReporter
 }
 
 func New(out io.Writer, name string, cnf *config.Sourced, tp list.ThemesProvider) *List {
@@ -25,12 +25,12 @@ func New(out io.Writer, name string, cnf *config.Sourced, tp list.ThemesProvider
 	return &List{
 		fs:  fs,
 		act: act,
-		cnf: cnf,
+		hr:  cnf.AResolved,
 	}
 }
 
 func (c *List) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.cnf.AResolved, c)
+	h := cmd.NewHelpWrap(c.hr, c)
 
 	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeyCmdDesc] = "List installed themes"

@@ -14,7 +14,7 @@ import (
 type Validate struct {
 	fs  *flagset.FlagSet
 	act *validate.Validate
-	cnf *config.Sourced
+	hr  cmd.HelpReporter
 }
 
 func New(out io.Writer, name string, cnf *config.Sourced, tv validate.ThemeValidator) *Validate {
@@ -28,12 +28,12 @@ func New(out io.Writer, name string, cnf *config.Sourced, tv validate.ThemeValid
 	return &Validate{
 		fs:  fs,
 		act: act,
-		cnf: cnf,
+		hr:  cnf.AResolved,
 	}
 }
 
 func (c *Validate) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.cnf.AResolved, c)
+	h := cmd.NewHelpWrap(c.hr, c)
 
 	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeyCmdDesc] = "Validate a theme"

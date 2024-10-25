@@ -14,7 +14,7 @@ import (
 type Identify struct {
 	fs  *flagset.FlagSet
 	act *identify.Identify
-	cnf *config.Sourced
+	hr  cmd.HelpReporter
 }
 
 func New(out io.Writer, name string, cnf *config.Sourced) *Identify {
@@ -28,12 +28,12 @@ func New(out io.Writer, name string, cnf *config.Sourced) *Identify {
 	return &Identify{
 		fs:  fs,
 		act: act,
-		cnf: cnf,
+		hr:  cnf.AResolved,
 	}
 }
 
 func (c *Identify) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.cnf.AResolved, c)
+	h := cmd.NewHelpWrap(c.hr, c)
 
 	cc := clic.New(h, subs...)
 	cc.Meta[clic.MetaKeyCmdDesc] = "Print file associated with the provided command"
