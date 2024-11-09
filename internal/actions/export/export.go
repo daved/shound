@@ -24,8 +24,10 @@ func New(out io.Writer, csr CmdSoundsReporter) *Export {
 }
 
 func (a *Export) Run(ctx context.Context) error {
-	aliases := a.csr.CmdList()
-	d := makeAliasesData(a.csr.NotFoundKey(), a.csr.NotFoundSound(), aliases)
+	csr := a.csr
+
+	aliases := csr.CmdList()
+	d := makeAliasesData(csr.NotFoundKey(), csr.NotFoundSound(), aliases)
 
 	return fprintAliases(a.out, d)
 }

@@ -5,43 +5,32 @@ import (
 	"io"
 
 	"github.com/daved/clic"
-	"github.com/daved/flagset"
 	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
 	"github.com/daved/shound/cmd/shound/internal/config"
 	"github.com/daved/shound/internal/actions/export"
 )
 
 type Export struct {
-	fs  *flagset.FlagSet
-	act *export.Export
-	hr  cmd.HelpReporter
+	action *export.Export
+	appCnf *config.Sourced
 }
 
-func New(out io.Writer, name string, cnf *config.Sourced) *Export {
-	fs := flagset.New(name)
-
-	act := export.New(out, cnf.AResolved)
-
+func New(out io.Writer, cnf *config.Sourced) *Export {
 	return &Export{
-		fs:  fs,
-		act: act,
-		hr:  cnf.AResolved,
+		action: export.New(out, cnf.AResolved),
+		appCnf: cnf,
 	}
 }
 
-func (c *Export) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.hr, c)
+func (c *Export) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
+	h := cmd.NewHelpWrap(c.appCnf.AResolved, c)
 
-	cc := clic.New(h, subs...)
-	cc.Meta[clic.MetaKeyCmdDesc] = "Print code for a shell to evaluate"
+	cc := clic.New(h, name, subs...)
+	cc.UsageConfig.CmdDesc = "Print code for a shell to evaluate"
 
 	return cc
 }
 
-func (c *Export) FlagSet() *flagset.FlagSet {
-	return c.fs
-}
-
 func (c *Export) HandleCommand(ctx context.Context) error {
-	return c.act.Run(ctx)
+	return c.action.Run(ctx)
 }

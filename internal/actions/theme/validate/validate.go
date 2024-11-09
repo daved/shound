@@ -14,6 +14,8 @@ type ThemeValidator interface {
 
 type Config struct {
 	IsDir bool
+	Theme string
+	Hash  string
 }
 
 func NewConfig() *Config {
@@ -22,38 +24,38 @@ func NewConfig() *Config {
 
 type Validate struct {
 	out io.Writer
-	cnf *Config
 	tv  ThemeValidator
+	cnf *Config
 }
 
-func New(out io.Writer, cnf *Config, tv ThemeValidator) *Validate {
+func New(out io.Writer, tv ThemeValidator, cnf *Config) *Validate {
 	return &Validate{
 		out: out,
-		cnf: cnf,
 		tv:  tv,
+		cnf: cnf,
 	}
 }
 
-func (a *Validate) Run(ctx context.Context, theme, hash string) error {
+func (a *Validate) Run(ctx context.Context) error {
 	eMsg := "theme: validate: %w"
 
 	if a.cnf.IsDir {
-		if theme == "" { // ignore hash
+		if a.cnf.Theme == "" { // ignore hash
 			return fmt.Errorf(eMsg, errors.New("no theme directory"))
 		}
 
-		if err := a.tv.ValidateThemeDir(theme); err != nil {
+		if err := a.tv.ValidateThemeDir(a.cnf.Theme); err != nil {
 			return fmt.Errorf(eMsg, err)
 		}
 
 		return nil
 	}
 
-	if theme == "" {
+	if a.cnf.Theme == "" {
 		return fmt.Errorf(eMsg, errors.New("no theme repo"))
 	}
 
-	if err := a.tv.ValidateThemeRemote(theme, hash); err != nil {
+	if err := a.tv.ValidateThemeRemote(a.cnf.Theme, a.cnf.Hash); err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
 

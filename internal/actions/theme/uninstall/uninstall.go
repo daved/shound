@@ -16,7 +16,8 @@ type ThemeDeleter interface {
 }
 
 type Config struct {
-	global *config.Config
+	global    *config.Config
+	ThemeRepo string
 }
 
 func NewConfig(global *config.Config) *Config {
@@ -31,7 +32,7 @@ type Uninstall struct {
 	td  ThemeDeleter
 }
 
-func New(out io.Writer, cnf *Config, td ThemeDeleter) *Uninstall {
+func New(out io.Writer, td ThemeDeleter, cnf *Config) *Uninstall {
 	return &Uninstall{
 		out: out,
 		cnf: cnf,
@@ -39,8 +40,9 @@ func New(out io.Writer, cnf *Config, td ThemeDeleter) *Uninstall {
 	}
 }
 
-func (a *Uninstall) Run(ctx context.Context, themeRepo string) error {
+func (a *Uninstall) Run(ctx context.Context) error {
 	eMsg := "theme: uninstall: %w"
+	themeRepo := a.cnf.ThemeRepo
 
 	if themeRepo == "" {
 		return fmt.Errorf(eMsg, errors.New("no theme repo"))

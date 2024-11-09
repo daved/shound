@@ -5,47 +5,41 @@ import (
 	"io"
 
 	"github.com/daved/clic"
-	"github.com/daved/flagset"
 	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
 	"github.com/daved/shound/cmd/shound/internal/config"
 	"github.com/daved/shound/internal/actions/theme/set"
 )
 
 type Set struct {
-	fs  *flagset.FlagSet
-	act *set.Set
-	hr  cmd.HelpReporter
+	action *set.Set
+	actCnf *set.Config
+	appCnf *config.Sourced
 }
 
-func New(out io.Writer, name string, cnf *config.Sourced, ts set.ThemeSetter) *Set {
-	fs := flagset.New(name)
-
-	act := set.New(out, ts)
+func New(out io.Writer, ts set.ThemeSetter, cnf *config.Sourced) *Set {
+	actCnf := set.NewConfig()
 
 	return &Set{
-		fs:  fs,
-		act: act,
-		hr:  cnf.AResolved,
+		action: set.New(out, ts, actCnf),
+		actCnf: actCnf,
+		appCnf: cnf,
 	}
 }
 
-func (c *Set) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.hr, c)
+func (c *Set) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
+	h := cmd.NewHelpWrap(c.appCnf.AResolved, c)
 
-	cc := clic.New(h, subs...)
-	cc.Meta[clic.MetaKeyCmdDesc] = "Set the current theme"
-	cc.Meta[clic.MetaKeySubRequired] = true
-	cc.Meta[clic.MetaKeyArgsHint] = "<theme_repo[@{<hash>|latest}]>"
+	cc := clic.New(h, name, subs...)
+	cc.SubRequired = true
+
+	cc.ArgSet.Arg(&c.actCnf.ThemeRepo, false, "theme_repo", "")
+
+	cc.UsageConfig.CmdDesc = "Set the current theme"
+	cc.UsageConfig.ArgsHint = "<theme_repo[@{<hash>|latest}]>"
 
 	return cc
 }
 
-func (c *Set) FlagSet() *flagset.FlagSet {
-	return c.fs
-}
-
 func (c *Set) HandleCommand(ctx context.Context) error {
-	themeRepo := c.fs.Arg(0)
-
-	return c.act.Run(ctx, themeRepo)
+	return c.action.Run(ctx)
 }

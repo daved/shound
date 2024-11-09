@@ -5,49 +5,39 @@ import (
 	"io"
 
 	"github.com/daved/clic"
-	"github.com/daved/flagset"
 	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
 	"github.com/daved/shound/cmd/shound/internal/config"
 	"github.com/daved/shound/internal/actions/identify"
 )
 
 type Identify struct {
-	fs  *flagset.FlagSet
-	act *identify.Identify
-	hr  cmd.HelpReporter
+	action *identify.Identify
+	actCnf *identify.Config
+	appCnf *config.Sourced
 }
 
-func New(out io.Writer, name string, cnf *config.Sourced) *Identify {
-	fs := flagset.New(name)
-
-	actCnf := identify.NewConfig(cnf.Resolved)
-	fs.Opt(&actCnf.PlayCmd, "playcmd", "Prefix identified sound with play command string.")
-
-	act := identify.New(out, actCnf)
+func New(out io.Writer, cnf *config.Sourced) *Identify {
+	actCnf := identify.NewConfig()
 
 	return &Identify{
-		fs:  fs,
-		act: act,
-		hr:  cnf.AResolved,
+		action: identify.New(out, cnf.AResolved, actCnf),
+		actCnf: actCnf,
+		appCnf: cnf,
 	}
 }
 
-func (c *Identify) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.hr, c)
+func (c *Identify) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
+	h := cmd.NewHelpWrap(c.appCnf.AResolved, c)
 
-	cc := clic.New(h, subs...)
-	cc.Meta[clic.MetaKeyCmdDesc] = "Print file associated with the provided command"
-	cc.Meta[clic.MetaKeyArgsHint] = "<command_name>"
+	cc := clic.New(h, name, subs...)
+	cc.FlagSet.Opt(&c.actCnf.PlayCmd, "playcmd", "Prefix identified sound with play command string.")
+	cc.ArgSet.Arg(&c.actCnf.CmdName, false, "command_name", "")
+	cc.UsageConfig.CmdDesc = "Print file associated with the provided command"
+	// cc.Meta[clic.MetaKeyArgsHint] = "<command_name>"
 
 	return cc
 }
 
-func (c *Identify) FlagSet() *flagset.FlagSet {
-	return c.fs
-}
-
 func (c *Identify) HandleCommand(ctx context.Context) error {
-	cmdName := c.fs.Arg(0)
-
-	return c.act.Run(ctx, cmdName)
+	return c.action.Run(ctx)
 }

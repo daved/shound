@@ -6,50 +6,57 @@ import (
 	"fmt"
 	"io"
 	"path/filepath"
-
-	"github.com/daved/shound/internal/config"
 )
 
-type Config struct {
-	global *config.Config
-
-	PlayCmd bool
+type CmdSoundsReporter interface {
+	CmdSounds() map[string]string
+	NotFoundKey() string
+	NotFoundSound() string
+	ThemeDir() string
+	PlayCmd() string
 }
 
-func NewConfig(global *config.Config) *Config {
-	return &Config{
-		global: global,
-	}
+type Config struct {
+	PlayCmd bool
+	CmdName string
+}
+
+func NewConfig() *Config {
+	return &Config{}
 }
 
 type Identify struct {
 	out io.Writer
+	csr CmdSoundsReporter
 	cnf *Config
 }
 
-func New(out io.Writer, cnf *Config) *Identify {
+func New(out io.Writer, csr CmdSoundsReporter, cnf *Config) *Identify {
 	return &Identify{
 		out: out,
+		csr: csr,
 		cnf: cnf,
 	}
 }
 
-func (a *Identify) Run(ctx context.Context, cmdName string) error {
-	if cmdName == "" {
+func (a *Identify) Run(ctx context.Context) error {
+	if a.cnf.CmdName == "" {
 		return errors.New("identify: no command name")
 	}
 
-	gCnf := a.cnf.global
+	csr := a.csr
+	cmdName := a.cnf.CmdName
+	playCmd := a.cnf.PlayCmd
 
-	sound, ok := gCnf.CmdSounds[cmdName]
-	if !ok && cmdName == gCnf.NotFoundKey {
-		sound = gCnf.NotFoundSound
+	sound, ok := csr.CmdSounds()[cmdName]
+	if !ok && cmdName == csr.NotFoundKey() {
+		sound = csr.NotFoundSound()
 	}
 
-	soundPath := filepath.Join(gCnf.ThemeDir, sound)
+	soundPath := filepath.Join(csr.ThemeDir(), sound)
 
-	if a.cnf.PlayCmd {
-		fmt.Fprintf(a.out, "%s %s\n", gCnf.PlayCmd, soundPath)
+	if playCmd {
+		fmt.Fprintf(a.out, "%s %s\n", csr.PlayCmd(), soundPath)
 		return nil
 	}
 

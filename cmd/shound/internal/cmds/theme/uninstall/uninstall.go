@@ -5,47 +5,41 @@ import (
 	"io"
 
 	"github.com/daved/clic"
-	"github.com/daved/flagset"
 	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
 	"github.com/daved/shound/cmd/shound/internal/config"
 	"github.com/daved/shound/internal/actions/theme/uninstall"
 )
 
 type Uninstall struct {
-	fs  *flagset.FlagSet
-	act *uninstall.Uninstall
-	hr  cmd.HelpReporter
+	action *uninstall.Uninstall
+	actCnf *uninstall.Config
+	appCnf *config.Sourced
 }
 
-func New(out io.Writer, name string, cnf *config.Sourced, td uninstall.ThemeDeleter) *Uninstall {
-	fs := flagset.New(name)
-
-	act := uninstall.New(out, uninstall.NewConfig(cnf.Resolved), td)
+func New(out io.Writer, td uninstall.ThemeDeleter, cnf *config.Sourced) *Uninstall {
+	actCnf := uninstall.NewConfig(cnf.Resolved)
 
 	return &Uninstall{
-		fs:  fs,
-		act: act,
-		hr:  cnf.AResolved,
+		action: uninstall.New(out, td, actCnf),
+		actCnf: actCnf,
+		appCnf: cnf,
 	}
 }
 
-func (c *Uninstall) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.hr, c)
+func (c *Uninstall) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
+	h := cmd.NewHelpWrap(c.appCnf.AResolved, c)
 
-	cc := clic.New(h, subs...)
-	cc.Meta[clic.MetaKeyCmdDesc] = "Uninstall a theme"
-	cc.Meta[clic.MetaKeySubRequired] = true
-	cc.Meta[clic.MetaKeyArgsHint] = "<theme_repo>"
+	cc := clic.New(h, name, subs...)
+	cc.SubRequired = true
+
+	cc.ArgSet.Arg(&c.actCnf.ThemeRepo, true, "theme_repo", "")
+
+	cc.UsageConfig.CmdDesc = "Uninstall a theme"
+	cc.UsageConfig.ArgsHint = "<theme_repo>"
 
 	return cc
 }
 
-func (c *Uninstall) FlagSet() *flagset.FlagSet {
-	return c.fs
-}
-
 func (c *Uninstall) HandleCommand(ctx context.Context) error {
-	themeRepo := c.fs.Arg(0)
-
-	return c.act.Run(ctx, themeRepo)
+	return c.action.Run(ctx)
 }

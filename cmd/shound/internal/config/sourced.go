@@ -50,8 +50,10 @@ func (s *Sourced) Resolve() error {
 	s.Resolved.ConfFilePath = s.Flags.ConfFilePath
 	s.Resolved.Bypass = s.File.Bypass
 	s.Resolved.PlayCmd = s.File.PlayCmd
+	s.AResolved.playCmd = s.Resolved.PlayCmd
 	s.Resolved.ThemesDir = s.File.ThemesDir
 	s.Resolved.ThemeDir = filepath.Join(string(s.File.ThemesDir), string(s.File.ThemeRepo))
+	s.AResolved.themeDir = s.Resolved.ThemeDir
 	s.Resolved.ThemeRepo = s.File.ThemeRepo
 	s.Resolved.CmdSounds = cloneMap(s.ThemeFile.CmdSounds)
 	s.Resolved.NotFoundKey = notFoundKey

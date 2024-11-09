@@ -2,9 +2,14 @@ module github.com/daved/shound
 
 go 1.21.9
 
+replace (
+	github.com/daved/clic => ../clic
+	github.com/daved/flagset => ../flagset
+)
+
 require (
 	github.com/daved/clic v0.0.0-20240708093731-5bbfc2103612
-	github.com/daved/flagset v0.0.0-20240706053228-ea0473f4a173
+	github.com/daved/flagset v0.0.0-20240707024308-575ee053b24d
 	github.com/go-git/go-git/v5 v5.12.0
 	github.com/liamg/memoryfs v1.6.0
 	github.com/otiai10/copy v1.14.0

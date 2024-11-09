@@ -5,6 +5,12 @@ type Config struct {
 	notFoundKey   string
 	notFoundSound string
 	help          bool
+	themeDir      string
+	playCmd       string
+}
+
+func (c *Config) CmdSounds() map[string]string {
+	return c.cmdSounds
 }
 
 func (c *Config) CmdList() []string {
@@ -21,4 +27,12 @@ func (c *Config) NotFoundSound() string {
 
 func (c *Config) Help() bool {
 	return c.help
+}
+
+func (c *Config) ThemeDir() string {
+	return c.themeDir
+}
+
+func (c *Config) PlayCmd() string {
+	return c.playCmd
 }

@@ -5,48 +5,42 @@ import (
 	"io"
 
 	"github.com/daved/clic"
-	"github.com/daved/flagset"
 	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
 	"github.com/daved/shound/cmd/shound/internal/config"
 	"github.com/daved/shound/internal/actions/theme/install"
 )
 
 type Install struct {
-	fs  *flagset.FlagSet
-	act *install.Install
-	hr  cmd.HelpReporter
+	action *install.Install
+	actCnf *install.Config
+	appCnf *config.Sourced
 }
 
-func New(out io.Writer, name string, cnf *config.Sourced, ta install.ThemeAdder) *Install {
-	fs := flagset.New(name)
-
-	act := install.New(out, install.NewConfig(cnf.Resolved), ta)
+func New(out io.Writer, ta install.ThemeAdder, cnf *config.Sourced) *Install {
+	actCnf := install.NewConfig()
 
 	return &Install{
-		fs:  fs,
-		act: act,
-		hr:  cnf.AResolved,
+		action: install.New(out, ta, actCnf),
+		actCnf: actCnf,
+		appCnf: cnf,
 	}
 }
 
-func (c *Install) AsClic(subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.hr, c)
+func (c *Install) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
+	h := cmd.NewHelpWrap(c.appCnf.AResolved, c)
 
-	cc := clic.New(h, subs...)
-	cc.Meta[clic.MetaKeyCmdDesc] = "Install a theme"
-	cc.Meta[clic.MetaKeySubRequired] = true
-	cc.Meta[clic.MetaKeyArgsHint] = "<theme_repo>"
+	cc := clic.New(h, name, subs...)
+	cc.SubRequired = true
+
+	cc.ArgSet.Arg(&c.actCnf.ThemeRepo, true, "theme_repo", "")
+	cc.ArgSet.Arg(&c.actCnf.ThemeHash, false, "theme_hash", "")
+
+	cc.UsageConfig.CmdDesc = "Install a theme"
+	cc.UsageConfig.ArgsHint = "<theme_repo> [hash]"
 
 	return cc
 }
 
-func (c *Install) FlagSet() *flagset.FlagSet {
-	return c.fs
-}
-
 func (c *Install) HandleCommand(ctx context.Context) error {
-	themeRepo := c.fs.Arg(0)
-	themeHash := c.fs.Arg(1)
-
-	return c.act.Run(ctx, themeRepo, themeHash)
+	return c.action.Run(ctx)
 }

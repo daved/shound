@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/daved/clic"
-	"github.com/daved/flagset"
 )
 
 type HelpReporter interface {
@@ -21,10 +20,6 @@ func NewHelpWrap(hr HelpReporter, next clic.Handler) *HelpWrap {
 		next: next,
 		hr:   hr,
 	}
-}
-
-func (c *HelpWrap) FlagSet() *flagset.FlagSet {
-	return c.next.FlagSet()
 }
 
 func (c *HelpWrap) HandleCommand(ctx context.Context) error {

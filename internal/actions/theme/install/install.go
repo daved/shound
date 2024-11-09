@@ -7,7 +7,6 @@ import (
 	"io"
 
 	"github.com/daved/shound/internal/actions/acterr"
-	"github.com/daved/shound/internal/config"
 )
 
 type ThemeAdder interface {
@@ -16,13 +15,12 @@ type ThemeAdder interface {
 }
 
 type Config struct {
-	global *config.Config
+	ThemeRepo string
+	ThemeHash string
 }
 
-func NewConfig(global *config.Config) *Config {
-	return &Config{
-		global: global,
-	}
+func NewConfig() *Config {
+	return &Config{}
 }
 
 type Install struct {
@@ -31,7 +29,7 @@ type Install struct {
 	ta  ThemeAdder
 }
 
-func New(out io.Writer, cnf *Config, ta ThemeAdder) *Install {
+func New(out io.Writer, ta ThemeAdder, cnf *Config) *Install {
 	return &Install{
 		out: out,
 		cnf: cnf,
@@ -39,26 +37,26 @@ func New(out io.Writer, cnf *Config, ta ThemeAdder) *Install {
 	}
 }
 
-func (a *Install) Run(ctx context.Context, themeRepo, hash string) error {
+func (a *Install) Run(ctx context.Context) error {
 	eMsg := "theme: install: %w"
 
-	if themeRepo == "" {
+	if a.cnf.ThemeRepo == "" {
 		return fmt.Errorf(eMsg, errors.New("no theme repo"))
 	}
 
-	isInstalled, err := a.ta.IsThemeInstalled(themeRepo)
+	isInstalled, err := a.ta.IsThemeInstalled(a.cnf.ThemeRepo)
 	if err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
 
 	if isInstalled {
-		return acterr.NewAlreadyInstalledError(themeRepo)
+		return acterr.NewAlreadyInstalledError(a.cnf.ThemeRepo)
 	}
 
 	// TODO: if version different, checkout correct version
 
 	// TODO: handle versions on initial clone
-	if err := a.ta.AddTheme(themeRepo, hash); err != nil {
+	if err := a.ta.AddTheme(a.cnf.ThemeRepo, a.cnf.ThemeHash); err != nil {
 		return fmt.Errorf(eMsg, err)
 	}
 

@@ -23,15 +23,15 @@ type (
 )
 
 func newCommand(appName string, out io.Writer, cnf *conf, tm *themesMgr) (*clic.Clic, error) {
-	cmd := root.New(appName, cnf).AsClic(
-		export.New(out, "export", cnf).AsClic(),
-		identify.New(out, "identify", cnf).AsClic(),
-		theme.New(out, "theme", cnf).AsClic(
-			install.New(out, "install", cnf, tm).AsClic(),
-			set.New(out, "set", cnf, tm).AsClic(),
-			list.New(out, "list", cnf, tm).AsClic(),
-			uninstall.New(out, "uninstall", cnf, tm).AsClic(),
-			validate.New(out, "validate", cnf, tm).AsClic(),
+	cmd := root.New(cnf).AsClic(appName,
+		export.New(out, cnf).AsClic("export"),
+		identify.New(out, cnf).AsClic("identify"),
+		theme.New(out, cnf).AsClic("theme",
+			install.New(out, tm, cnf).AsClic("install"),
+			set.New(out, tm, cnf).AsClic("set"),
+			list.New(out, tm, cnf).AsClic("list"),
+			uninstall.New(out, tm, cnf).AsClic("uninstall"),
+			validate.New(out, tm, cnf).AsClic("validate"),
 		),
 	)
 
