@@ -5,31 +5,25 @@ import (
 	"io"
 
 	"github.com/daved/clic"
-	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
-	"github.com/daved/shound/cmd/shound/internal/config"
 	"github.com/daved/shound/internal/actions/theme/validate"
 )
 
 type Validate struct {
 	action *validate.Validate
 	actCnf *validate.Config
-	appCnf *config.Sourced
 }
 
-func New(out io.Writer, tv validate.ThemeValidator, cnf *config.Sourced) *Validate {
+func New(out io.Writer, tv validate.ThemeValidator) *Validate {
 	actCnf := validate.NewConfig()
 
 	return &Validate{
 		action: validate.New(out, tv, actCnf),
 		actCnf: actCnf,
-		appCnf: cnf,
 	}
 }
 
 func (c *Validate) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.appCnf.AResolved, c)
-
-	cc := clic.New(h, name, subs...)
+	cc := clic.New(c, name, subs...)
 	cc.SubRequired = true
 
 	cc.FlagSet.Opt(&c.actCnf.IsDir, "dir", "Use theme_repo arg as a directory (hash will be ignored).")

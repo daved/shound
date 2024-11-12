@@ -27,11 +27,11 @@ func newCommand(appName string, out io.Writer, cnf *conf, tm *themesMgr) (*clic.
 		export.New(out, cnf).AsClic("export"),
 		identify.New(out, cnf).AsClic("identify"),
 		theme.New(out, cnf).AsClic("theme",
-			install.New(out, tm, cnf).AsClic("install"),
-			set.New(out, tm, cnf).AsClic("set"),
+			install.New(out, tm).AsClic("install"),
+			set.New(out, tm).AsClic("set"),
 			list.New(out, tm, cnf).AsClic("list"),
 			uninstall.New(out, tm, cnf).AsClic("uninstall"),
-			validate.New(out, tm, cnf).AsClic("validate"),
+			validate.New(out, tm).AsClic("validate"),
 		),
 	)
 

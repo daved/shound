@@ -47,11 +47,18 @@ func Run(appName string, out io.Writer, args []string) error {
 		return err
 	}
 
-	if err := cc.Parse(args); err != nil {
+	err = cc.Parse(args)
+	if err != nil {
 		if perr := (*clic.ParseError)(nil); errors.As(err, &perr) {
-			fmt.Fprint(out, perr.Clic().Usage())
+			fmt.Fprintln(out, perr.Clic().Called().Usage())
+			return perr
 		}
 		return err
+	}
+
+	if cnf.Flags.Help {
+		fmt.Fprintln(out, cc.Called().Usage())
+		return nil
 	}
 
 	if err := cnf.Resolve(); err != nil {
@@ -61,10 +68,6 @@ func Run(appName string, out io.Writer, args []string) error {
 	if err := cc.Handle(context.Background()); err != nil {
 		if uerr := (*cmd.UsageError)(nil); errors.As(err, &uerr) {
 			fmt.Fprint(out, cc.Called().Usage())
-		}
-
-		if !errors.Is(err, cmd.ErrHelpFlag) {
-			return err
 		}
 	}
 

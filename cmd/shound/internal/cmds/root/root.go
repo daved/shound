@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/daved/clic"
+	"github.com/daved/flagset"
 	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
 	"github.com/daved/shound/cmd/shound/internal/config"
 )
@@ -20,13 +21,14 @@ func New(cnf *config.Sourced) *Root {
 }
 
 func (c *Root) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.appCnf.AResolved, c)
-
-	cc := clic.New(h, name, subs...)
+	cc := clic.New(c, name, subs...)
 	cc.SubRequired = true
 
-	cc.FlagSet.Opt(&c.appCnf.Flags.Help, "help|h", "Print help output.")
 	cc.FlagSet.Opt(&c.appCnf.Flags.ConfFilePath, "conf", "Path to config file.")
+
+	helpOpt := cc.FlagSet.RecursiveOpt(&c.appCnf.Flags.Help, "help|h", "Print help output.")
+	helpOpt.Meta[flagset.MetaKeyTypeHint] = ""
+	helpOpt.Meta[flagset.MetaKeyDefaultHint] = ""
 
 	return cc
 }

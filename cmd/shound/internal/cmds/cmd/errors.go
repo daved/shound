@@ -1,11 +1,8 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 )
-
-var ErrHelpFlag = errors.New("help requested")
 
 type UsageError struct {
 	err error

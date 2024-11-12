@@ -5,31 +5,25 @@ import (
 	"io"
 
 	"github.com/daved/clic"
-	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
-	"github.com/daved/shound/cmd/shound/internal/config"
 	"github.com/daved/shound/internal/actions/theme/install"
 )
 
 type Install struct {
 	action *install.Install
 	actCnf *install.Config
-	appCnf *config.Sourced
 }
 
-func New(out io.Writer, ta install.ThemeAdder, cnf *config.Sourced) *Install {
+func New(out io.Writer, ta install.ThemeAdder) *Install {
 	actCnf := install.NewConfig()
 
 	return &Install{
 		action: install.New(out, ta, actCnf),
 		actCnf: actCnf,
-		appCnf: cnf,
 	}
 }
 
 func (c *Install) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.appCnf.AResolved, c)
-
-	cc := clic.New(h, name, subs...)
+	cc := clic.New(c, name, subs...)
 	cc.SubRequired = true
 
 	cc.ArgSet.Arg(&c.actCnf.ThemeRepo, true, "theme_repo", "")

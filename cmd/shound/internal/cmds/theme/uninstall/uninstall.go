@@ -5,7 +5,6 @@ import (
 	"io"
 
 	"github.com/daved/clic"
-	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
 	"github.com/daved/shound/cmd/shound/internal/config"
 	"github.com/daved/shound/internal/actions/theme/uninstall"
 )
@@ -13,7 +12,6 @@ import (
 type Uninstall struct {
 	action *uninstall.Uninstall
 	actCnf *uninstall.Config
-	appCnf *config.Sourced
 }
 
 func New(out io.Writer, td uninstall.ThemeDeleter, cnf *config.Sourced) *Uninstall {
@@ -22,14 +20,11 @@ func New(out io.Writer, td uninstall.ThemeDeleter, cnf *config.Sourced) *Uninsta
 	return &Uninstall{
 		action: uninstall.New(out, td, actCnf),
 		actCnf: actCnf,
-		appCnf: cnf,
 	}
 }
 
 func (c *Uninstall) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
-	h := cmd.NewHelpWrap(c.appCnf.AResolved, c)
-
-	cc := clic.New(h, name, subs...)
+	cc := clic.New(c, name, subs...)
 	cc.SubRequired = true
 
 	cc.ArgSet.Arg(&c.actCnf.ThemeRepo, true, "theme_repo", "")
