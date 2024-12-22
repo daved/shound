@@ -11,7 +11,6 @@ import (
 
 type Theme struct {
 	action *theme.Theme
-	actCnf *theme.Config
 }
 
 func New(out io.Writer, cnf *config.Sourced) *Theme {

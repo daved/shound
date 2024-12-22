@@ -49,13 +49,11 @@ func Run(appName string, out io.Writer, args []string) error {
 
 	err = cc.Parse(args)
 	if err != nil {
-		if perr := (*clic.ParseError)(nil); errors.As(err, &perr) {
-			fmt.Fprintln(out, perr.Clic().Called().Usage())
-			return perr
+		if cerr := (*clic.Error)(nil); errors.As(err, &cerr) {
+			fmt.Fprintln(out, cerr.Clic().Called().Usage())
 		}
 		return err
 	}
-
 	if cnf.Flags.Help {
 		fmt.Fprintln(out, cc.Called().Usage())
 		return nil

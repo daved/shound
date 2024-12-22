@@ -26,11 +26,10 @@ func New(out io.Writer, cnf *config.Sourced) *Identify {
 func (c *Identify) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
 	cc := clic.New(c, name, subs...)
 
-	cc.FlagSet.Opt(&c.actCnf.PlayCmd, "playcmd", "Prefix identified sound with play command.")
-	cc.ArgSet.Arg(&c.actCnf.CmdName, false, "command_name", "")
+	cc.Flag(&c.actCnf.PlayCmd, "playcmd", "Prefix identified sound with play command.")
+	cc.Arg(&c.actCnf.CmdName, true, "command_name", "")
 
 	cc.UsageConfig.CmdDesc = "Print file associated with the provided command"
-	// cc.Meta[clic.MetaKeyArgsHint] = "<command_name>"
 
 	return cc
 }

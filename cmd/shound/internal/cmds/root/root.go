@@ -24,9 +24,9 @@ func (c *Root) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
 	cc := clic.New(c, name, subs...)
 	cc.SubRequired = true
 
-	cc.FlagSet.Opt(&c.appCnf.Flags.ConfFilePath, "conf", "Path to config file.")
+	cc.Flag(&c.appCnf.Flags.ConfFilePath, "conf", "Path to config file.")
 
-	helpOpt := cc.FlagSet.RecursiveOpt(&c.appCnf.Flags.Help, "help|h", "Print help output.")
+	helpOpt := cc.FlagRecursive(&c.appCnf.Flags.Help, "help|h", "Print help output.")
 	helpOpt.Meta[flagset.MetaKeyTypeHint] = ""
 	helpOpt.Meta[flagset.MetaKeyDefaultHint] = ""
 

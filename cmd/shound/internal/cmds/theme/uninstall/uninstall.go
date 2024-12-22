@@ -25,12 +25,10 @@ func New(out io.Writer, td uninstall.ThemeDeleter, cnf *config.Sourced) *Uninsta
 
 func (c *Uninstall) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
 	cc := clic.New(c, name, subs...)
-	cc.SubRequired = true
 
-	cc.ArgSet.Arg(&c.actCnf.ThemeRepo, true, "theme_repo", "")
+	cc.Arg(&c.actCnf.ThemeRepo, true, "theme_repo", "")
 
 	cc.UsageConfig.CmdDesc = "Uninstall a theme"
-	cc.UsageConfig.ArgsHint = "<theme_repo>"
 
 	return cc
 }
