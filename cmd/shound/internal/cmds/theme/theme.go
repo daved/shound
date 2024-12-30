@@ -25,7 +25,7 @@ func New(out io.Writer, cnf *config.Sourced) *Theme {
 
 func (c *Theme) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
 	cc := clic.New(c, name, subs...)
-	cc.UsageConfig.CmdDesc = "Show info about the current theme"
+	cc.Description = "Show info about the current theme"
 
 	return cc
 }

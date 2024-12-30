@@ -50,12 +50,12 @@ func Run(appName string, out io.Writer, args []string) error {
 	err = cc.Parse(args)
 	if err != nil {
 		if cerr := (*clic.Error)(nil); errors.As(err, &cerr) {
-			fmt.Fprintln(out, cerr.Clic().Called().Usage())
+			fmt.Fprintln(out, cerr.Clic().ResolvedCmd().Usage())
 		}
 		return err
 	}
 	if cnf.Flags.Help {
-		fmt.Fprintln(out, cc.Called().Usage())
+		fmt.Fprintln(out, cc.ResolvedCmd().Usage())
 		return nil
 	}
 
@@ -63,9 +63,9 @@ func Run(appName string, out io.Writer, args []string) error {
 		return err
 	}
 
-	if err := cc.Handle(context.Background()); err != nil {
+	if err := cc.HandleResolvedCmd(context.Background()); err != nil {
 		if uerr := (*cmd.UsageError)(nil); errors.As(err, &uerr) {
-			fmt.Fprint(out, cc.Called().Usage())
+			fmt.Fprint(out, cc.ResolvedCmd().Usage())
 		}
 	}
 

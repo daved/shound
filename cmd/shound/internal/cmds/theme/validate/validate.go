@@ -24,13 +24,12 @@ func New(out io.Writer, tv validate.ThemeValidator) *Validate {
 
 func (c *Validate) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
 	cc := clic.New(c, name, subs...)
+	cc.Description = "Validate a theme"
+
+	cc.Operand(&c.actCnf.Theme, true, "theme_repo", "Theme repo to validate.")
+	cc.Operand(&c.actCnf.Hash, false, "hash", "Theme repo hash (falls back to latest).")
 
 	cc.Flag(&c.actCnf.IsDir, "dir", "Use theme_repo arg as a directory (hash will be ignored).")
-
-	cc.Arg(&c.actCnf.Theme, true, "theme_repo", "Theme repo to validate.")
-	cc.Arg(&c.actCnf.Hash, false, "hash", "Specific theme repo hash (falls back to latest).")
-
-	cc.UsageConfig.CmdDesc = "Validate a theme"
 
 	return cc
 }

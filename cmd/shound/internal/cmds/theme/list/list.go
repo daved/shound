@@ -21,7 +21,7 @@ func New(out io.Writer, tp list.ThemesProvider, cnf *config.Sourced) *List {
 
 func (c *List) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
 	cc := clic.New(c, name, subs...)
-	cc.UsageConfig.CmdDesc = "List installed themes"
+	cc.Description = "List installed themes"
 
 	return cc
 }

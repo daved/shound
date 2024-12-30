@@ -5,7 +5,6 @@ import (
 	"errors"
 
 	"github.com/daved/clic"
-	"github.com/daved/flagset"
 	"github.com/daved/shound/cmd/shound/internal/cmds/cmd"
 	"github.com/daved/shound/cmd/shound/internal/config"
 )
@@ -26,9 +25,9 @@ func (c *Root) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
 
 	cc.Flag(&c.appCnf.Flags.ConfFilePath, "conf", "Path to config file.")
 
-	helpOpt := cc.FlagRecursive(&c.appCnf.Flags.Help, "help|h", "Print help output.")
-	helpOpt.Meta[flagset.MetaKeyTypeHint] = ""
-	helpOpt.Meta[flagset.MetaKeyDefaultHint] = ""
+	helpFlag := cc.FlagRecursive(&c.appCnf.Flags.Help, "help|h", "Print help output.")
+	helpFlag.TypeName = ""
+	helpFlag.DefaultText = ""
 
 	return cc
 }

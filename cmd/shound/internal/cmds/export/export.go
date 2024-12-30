@@ -23,7 +23,7 @@ func New(out io.Writer, cnf *config.Sourced) *Export {
 
 func (c *Export) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
 	cc := clic.New(c, name, subs...)
-	cc.UsageConfig.CmdDesc = "Print code for a shell to evaluate"
+	cc.Description = "Print code for a shell to evaluate"
 
 	return cc
 }

@@ -24,11 +24,10 @@ func New(out io.Writer, ta install.ThemeAdder) *Install {
 
 func (c *Install) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
 	cc := clic.New(c, name, subs...)
+	cc.Description = "Install a theme"
 
-	cc.Arg(&c.actCnf.ThemeRepo, true, "theme_repo", "")
-	cc.Arg(&c.actCnf.ThemeHash, false, "hash", "")
-
-	cc.UsageConfig.CmdDesc = "Install a theme"
+	cc.Operand(&c.actCnf.ThemeRepo, true, "theme_repo", "")
+	cc.Operand(&c.actCnf.ThemeHash, false, "hash", "")
 
 	return cc
 }

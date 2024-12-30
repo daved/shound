@@ -24,10 +24,9 @@ func New(out io.Writer, ts set.ThemeSetter) *Set {
 
 func (c *Set) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
 	cc := clic.New(c, name, subs...)
+	cc.Description = "Set the current theme"
 
-	cc.Arg(&c.actCnf.ThemeRepo, true, "theme_repo", "")
-
-	cc.UsageConfig.CmdDesc = "Set the current theme"
+	cc.Operand(&c.actCnf.ThemeRepo, true, "theme_repo", "")
 
 	return cc
 }
