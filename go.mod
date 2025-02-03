@@ -3,7 +3,7 @@ module github.com/daved/shound
 go 1.23.2
 
 require (
-	github.com/daved/clic v0.0.0-20250118193425-ac27984048d4
+	github.com/daved/clic v0.0.0-20250203095919-5336ecf4602f
 	github.com/go-git/go-git/v5 v5.13.0
 	github.com/liamg/memoryfs v1.6.0
 	github.com/otiai10/copy v1.14.0
@@ -16,8 +16,8 @@ require (
 	github.com/ProtonMail/go-crypto v1.1.3 // indirect
 	github.com/cloudflare/circl v1.3.7 // indirect
 	github.com/cyphar/filepath-securejoin v0.2.5 // indirect
-	github.com/daved/flagset v0.0.0-20250118065536-353442da5e6a // indirect
-	github.com/daved/operandset v0.0.0-20250118084049-41341f9093c3 // indirect
+	github.com/daved/flagset v0.0.0-20250203090156-c414ebacde42 // indirect
+	github.com/daved/operandset v0.0.0-20250203092754-5d0780f29146 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
 	github.com/go-git/go-billy/v5 v5.6.0 // indirect
