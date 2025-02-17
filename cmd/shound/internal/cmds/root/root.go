@@ -24,7 +24,7 @@ func (c *Root) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
 	cc.SubRequired = true
 
 	cc.Flag(&c.appCnf.Flags.ConfFilePath, "conf", "Path to config file.")
-	cc.FlagRecursive(cmd.ErrHelp, "help|h", "Print help output.")
+	cc.Recursively(func(c *clic.Clic) { c.Flag(cmd.ErrHelp, "help|h", "Print help output.") })
 
 	return cc
 }
