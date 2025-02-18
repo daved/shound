@@ -16,10 +16,10 @@ github.com/cyphar/filepath-securejoin v0.2.5/go.mod h1:aPGpWjXOXUn2NCNjFvBE6aRxG
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/daved/clic v0.0.0-20250217043629-6618db1e14e5 h1:jghf0c43S/PhqRt1BO5kKdKbg6ohms4/sftWGIsmlYU=
-github.com/daved/clic v0.0.0-20250217043629-6618db1e14e5/go.mod h1:2rDxF8iVROJ/pjt2NQME90/uUCdPwDN8Rq4VKcG0Jgc=
-github.com/daved/flagset v0.0.0-20250217040031-c5c18cef26af h1:4acrCHOmf9fpCsX3bI/DvVKyApHEVQGcrRpzRgqxguM=
-github.com/daved/flagset v0.0.0-20250217040031-c5c18cef26af/go.mod h1:uqwMro16yjZnMy9vjyS0MIwxgx14Mdd8CijvAJqrlSE=
+github.com/daved/clic v0.0.0-20250218021652-d912d5f03832 h1:yu5gEfKOkyczhP93B13UAutVSk7M/Pllg5RyfsZApvg=
+github.com/daved/clic v0.0.0-20250218021652-d912d5f03832/go.mod h1:d/QfyzTvyJcO282C3WOusjS608LMoNVbqSQvwlVahk4=
+github.com/daved/flagset v0.0.0-20250218004222-c1b2e8baebf6 h1:dBotuKMdnxQ+aNQrF2N+oNEc20ZWWicphW0M2pANT4E=
+github.com/daved/flagset v0.0.0-20250218004222-c1b2e8baebf6/go.mod h1:uqwMro16yjZnMy9vjyS0MIwxgx14Mdd8CijvAJqrlSE=
 github.com/daved/operandset v0.0.0-20250216084050-8e7175780b85 h1:d0AmtGdQ56rU1uY3avuG/a2y7bsQXXwRQCY4Px3Fet0=
 github.com/daved/operandset v0.0.0-20250216084050-8e7175780b85/go.mod h1:vt3Ylm8zGl1Q7ehTeg4m5YtFZ64pW3a5NyiSChsM3lQ=
 github.com/daved/vtype v0.0.0-20250216024512-4791ea611495 h1:7gvbTKPPXEIC+UW9YitxYdksxrWeDE1WoqmlnlAKImM=
