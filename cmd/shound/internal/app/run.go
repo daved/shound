@@ -64,6 +64,7 @@ func Run(appName string, out io.Writer, args []string) error {
 		if uerr := (*cmd.UsageError)(nil); errors.As(err, &uerr) {
 			fmt.Fprint(out, parsed.Usage())
 		}
+		return err
 	}
 
 	return nil

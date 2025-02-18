@@ -30,5 +30,5 @@ func (c *Root) AsClic(name string, subs ...*clic.Clic) *clic.Clic {
 }
 
 func (c *Root) HandleCommand(ctx context.Context) error {
-	return cmd.NewUsageError(errors.New("no subcommand"))
+	return cmd.NewUsageError(errors.New("subcommand required"))
 }
