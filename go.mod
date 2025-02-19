@@ -3,7 +3,7 @@ module github.com/daved/shound
 go 1.23.2
 
 require (
-	github.com/daved/clic v0.0.0-20250218021652-d912d5f03832
+	github.com/daved/clic v0.0.0-20250219062315-8de4ec443df6
 	github.com/go-git/go-git/v5 v5.13.0
 	github.com/liamg/memoryfs v1.6.0
 	github.com/otiai10/copy v1.14.0

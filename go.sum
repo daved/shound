@@ -16,8 +16,8 @@ github.com/cyphar/filepath-securejoin v0.2.5/go.mod h1:aPGpWjXOXUn2NCNjFvBE6aRxG
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/daved/clic v0.0.0-20250218021652-d912d5f03832 h1:yu5gEfKOkyczhP93B13UAutVSk7M/Pllg5RyfsZApvg=
-github.com/daved/clic v0.0.0-20250218021652-d912d5f03832/go.mod h1:d/QfyzTvyJcO282C3WOusjS608LMoNVbqSQvwlVahk4=
+github.com/daved/clic v0.0.0-20250219062315-8de4ec443df6 h1:am8JeuZuuDvfpdFD3rneoXDbHr2PHnElKRIVZbg3dFI=
+github.com/daved/clic v0.0.0-20250219062315-8de4ec443df6/go.mod h1:d/QfyzTvyJcO282C3WOusjS608LMoNVbqSQvwlVahk4=
 github.com/daved/flagset v0.0.0-20250218004222-c1b2e8baebf6 h1:dBotuKMdnxQ+aNQrF2N+oNEc20ZWWicphW0M2pANT4E=
 github.com/daved/flagset v0.0.0-20250218004222-c1b2e8baebf6/go.mod h1:uqwMro16yjZnMy9vjyS0MIwxgx14Mdd8CijvAJqrlSE=
 github.com/daved/operandset v0.0.0-20250216084050-8e7175780b85 h1:d0AmtGdQ56rU1uY3avuG/a2y7bsQXXwRQCY4Px3Fet0=
